@@ -1,0 +1,33 @@
+{#
+  public/404.html — Page d'erreur 404 custom.
+  Servie par l'errorhandler enregistré dans app/__init__.py.
+#}
+{% extends "base.html" %}
+
+{% set page_title = "Page not found — Gecko Agent" %}
+{% set page_description = "The page you're looking for doesn't exist. Head back to the homepage." %}
+
+{% block content %}
+  <section class="mx-auto flex max-w-2xl flex-col items-center justify-center px-4 py-24 text-center sm:py-32">
+
+    <p class="text-sm font-medium text-muted-foreground">404</p>
+
+    <h1 class="mt-4 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+      This page wandered off.
+    </h1>
+
+    <p class="mt-4 text-base text-muted-foreground">
+      The link might be broken, or the page may have been moved.
+    </p>
+
+    <div class="mt-8">
+      <a
+        href="{{ url_for('public.home') }}"
+        class="inline-flex items-center rounded-md bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground hover:opacity-90 transition-opacity"
+      >
+        Back to homepage
+      </a>
+    </div>
+
+  </section>
+{% endblock %}

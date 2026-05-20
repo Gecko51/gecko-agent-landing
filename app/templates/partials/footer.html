@@ -1,0 +1,47 @@
+{#
+  partials/footer.html — Footer global présent sur toutes les pages.
+
+  Phase 1 : version minimale (copyright + lien GitHub + lien MIT).
+  Phase 3 : ajout des liens privacy, terms, contact.
+#}
+<footer class="border-t border-border bg-background">
+  <div class="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
+
+    <div class="flex flex-col items-center justify-between gap-4 sm:flex-row">
+
+      {# --- Copyright + tagline --- #}
+      <p class="text-sm text-muted-foreground">
+        &copy; {{ current_year | default(2026) }} Gecko Agent. Open source, MIT licensed.
+      </p>
+
+      {# --- Liens --- #}
+      <nav class="flex items-center gap-4 text-sm text-muted-foreground">
+        <a
+          href="{{ config.GITHUB_REPO_URL }}"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="hover:text-foreground transition-colors"
+        >
+          GitHub
+        </a>
+        <a
+          href="{{ config.GITHUB_REPO_URL }}/blob/main/PRIVACY.md"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="hover:text-foreground transition-colors"
+        >
+          Privacy
+        </a>
+        <a
+          href="{{ config.GITHUB_REPO_URL }}/blob/main/LICENSE"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="hover:text-foreground transition-colors"
+        >
+          License
+        </a>
+      </nav>
+
+    </div>
+  </div>
+</footer>

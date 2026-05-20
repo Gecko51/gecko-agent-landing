@@ -1,0 +1,141 @@
+{#
+  base.html — Layout racine de toutes les pages.
+
+  Architecture :
+  - Tailwind CSS via Play CDN (Phase 1). Sera compilé en Phase 4.
+  - Variables CSS oklch copiées de l'extension (cohérence visuelle 100%).
+  - Police Inter en self-hosted-style via Google Fonts (preload).
+  - Structure HTML5 sémantique, <html lang="en"> figé (landing en anglais).
+
+  Les pages enfants étendent ce template :
+    {% extends "base.html" %}
+    {% block content %} ... {% endblock %}
+#}
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  {# Inclusion des meta SEO (title, description, OG, Twitter, JSON-LD) #}
+  {% include "partials/seo_head.html" %}
+
+  {# Police Inter — preconnect + preload pour éviter le FOUT #}
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+
+  {# Tailwind CSS Play CDN (Phase 1 uniquement — compilé en Phase 4) #}
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  {# Configuration Tailwind inline : mappe les classes Tailwind sur nos variables CSS oklch
+     Cela permet d'écrire `bg-background text-foreground` exactement comme dans l'extension. #}
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+          },
+          colors: {
+            background: 'var(--color-background)',
+            foreground: 'var(--color-foreground)',
+            card: 'var(--color-card)',
+            'card-foreground': 'var(--color-card-foreground)',
+            popover: 'var(--color-popover)',
+            'popover-foreground': 'var(--color-popover-foreground)',
+            primary: 'var(--color-primary)',
+            'primary-foreground': 'var(--color-primary-foreground)',
+            secondary: 'var(--color-secondary)',
+            'secondary-foreground': 'var(--color-secondary-foreground)',
+            muted: 'var(--color-muted)',
+            'muted-foreground': 'var(--color-muted-foreground)',
+            accent: 'var(--color-accent)',
+            'accent-foreground': 'var(--color-accent-foreground)',
+            destructive: 'var(--color-destructive)',
+            'destructive-foreground': 'var(--color-destructive-foreground)',
+            border: 'var(--color-border)',
+            input: 'var(--color-input)',
+            ring: 'var(--color-ring)',
+          },
+          borderRadius: {
+            DEFAULT: 'var(--radius)',
+            lg: 'var(--radius)',
+            md: 'calc(var(--radius) - 2px)',
+            sm: 'calc(var(--radius) - 4px)',
+          },
+        }
+      }
+    }
+  </script>
+
+  {# Variables CSS oklch — COPIE EXACTE de l'extension Chrome (src/sidepanel/globals.css)
+     Ne PAS modifier sans changer aussi l'extension : la cohérence visuelle est critique. #}
+  <style>
+    :root {
+      --color-background: oklch(1 0 0);
+      --color-foreground: oklch(0.145 0 0);
+      --color-card: oklch(1 0 0);
+      --color-card-foreground: oklch(0.145 0 0);
+      --color-popover: oklch(1 0 0);
+      --color-popover-foreground: oklch(0.145 0 0);
+      --color-primary: oklch(0.205 0 0);
+      --color-primary-foreground: oklch(0.985 0 0);
+      --color-secondary: oklch(0.97 0 0);
+      --color-secondary-foreground: oklch(0.205 0 0);
+      --color-muted: oklch(0.97 0 0);
+      --color-muted-foreground: oklch(0.556 0 0);
+      --color-accent: oklch(0.97 0 0);
+      --color-accent-foreground: oklch(0.205 0 0);
+      --color-destructive: oklch(0.577 0.245 27.325);
+      --color-destructive-foreground: oklch(0.577 0.245 27.325);
+      --color-border: oklch(0.922 0 0);
+      --color-input: oklch(0.922 0 0);
+      --color-ring: oklch(0.708 0 0);
+      --radius: 0.625rem;
+    }
+
+    /* Reset base : applique la palette neutral à tout le document */
+    html {
+      background-color: var(--color-background);
+      color: var(--color-foreground);
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* Respect du prefers-reduced-motion pour l'accessibilité */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+
+    /* Focus visible custom — discret mais accessible (WCAG 2.4.7) */
+    :focus-visible {
+      outline: 2px solid var(--color-ring);
+      outline-offset: 2px;
+      border-radius: var(--radius);
+    }
+  </style>
+
+  {# Block extensible pour les pages qui ont besoin d'ajouter des CSS/JS spécifiques #}
+  {% block extra_head %}{% endblock %}
+</head>
+
+<body class="min-h-screen bg-background text-foreground antialiased flex flex-col">
+  {# Header sticky — visible sur toutes les pages #}
+  {% include "partials/header.html" %}
+
+  {# Contenu principal injecté par les pages enfants via {% block content %} #}
+  <main class="flex-1">
+    {% block content %}{% endblock %}
+  </main>
+
+  {# Footer global #}
+  {% include "partials/footer.html" %}
+
+  {# Block extensible pour les pages qui ont besoin de JS en fin de body #}
+  {% block extra_scripts %}{% endblock %}
+</body>
+</html>

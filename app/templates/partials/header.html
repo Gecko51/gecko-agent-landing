@@ -1,0 +1,46 @@
+{#
+  partials/header.html — Header sticky présent sur toutes les pages.
+
+  Phase 1 : version minimale (logo + 2 CTAs).
+  Phase 2 : ajout du menu nav avec ancres (#features, #how-it-works, #faq…)
+            + menu mobile burger.
+
+  Toutes les chaînes visibles sont en ANGLAIS.
+#}
+<header class="sticky top-0 z-50 w-full border-b border-border bg-background/80 backdrop-blur-md">
+  <div class="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
+
+    {# --- Logo + nom de marque --- #}
+    <a href="{{ url_for('public.home') }}" class="flex items-center gap-2 font-semibold text-foreground">
+      {# Placeholder logo — sera remplacé par le SVG du gecko en Phase 2 #}
+      <div class="flex h-8 w-8 items-center justify-center rounded-md bg-primary text-primary-foreground text-sm font-bold">
+        G
+      </div>
+      <span class="text-base">Gecko Agent</span>
+    </a>
+
+    {# --- CTAs --- #}
+    <div class="flex items-center gap-2 sm:gap-3">
+      {# CTA secondaire : GitHub (sera plus discret que le primaire) #}
+      <a
+        href="{{ config.GITHUB_REPO_URL }}"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="hidden sm:inline-flex items-center rounded-md border border-border bg-background px-3 py-2 text-sm font-medium text-foreground hover:bg-muted transition-colors"
+      >
+        GitHub
+      </a>
+
+      {# CTA primaire : Chrome Web Store #}
+      <a
+        href="{{ config.CHROME_WEBSTORE_URL }}"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="inline-flex items-center rounded-md bg-primary px-3 py-2 text-sm font-medium text-primary-foreground hover:opacity-90 transition-opacity"
+      >
+        Install on Chrome
+      </a>
+    </div>
+
+  </div>
+</header>

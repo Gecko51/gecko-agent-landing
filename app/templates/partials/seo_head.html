@@ -1,0 +1,73 @@
+{#
+  partials/seo_head.html — Meta tags SEO + Open Graph + Twitter Card.
+
+  Variables attendues (chaque page enfant peut les surcharger via Jinja2 set) :
+  - page_title       : titre <title> (default défini ici)
+  - page_description : meta description (default défini ici)
+  - page_url         : URL canonique (default = request.url)
+  - og_image         : image OG (1200x630), default = logo
+
+  Tous les textes ici sont en ANGLAIS (cible internationale).
+#}
+
+{# Encodage + viewport — indispensables #}
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+{# Title + description par défaut — surchargés par les pages enfants si besoin #}
+<title>{{ page_title | default("Gecko Agent — AI agent in your Chrome side panel") }}</title>
+<meta name="description" content="{{ page_description | default('AI-powered agentic browser automation assistant. Read web pages, automate workflows, and execute multi-step tasks — all from a conversational chat in Chrome.') }}">
+
+{# Auteur + robots #}
+<meta name="author" content="Gecko Agent">
+<meta name="robots" content="index, follow">
+
+{# Canonical URL — évite le contenu dupliqué pour Google #}
+<link rel="canonical" href="{{ page_url | default(request.url) }}">
+
+{# --- Open Graph (Facebook, LinkedIn, Slack, Discord…) --- #}
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Gecko Agent">
+<meta property="og:title" content="{{ page_title | default('Gecko Agent — AI agent in your Chrome side panel') }}">
+<meta property="og:description" content="{{ page_description | default('AI-powered agentic browser automation assistant. Read pages, automate workflows, execute multi-step tasks.') }}">
+<meta property="og:url" content="{{ page_url | default(request.url) }}">
+<meta property="og:image" content="{{ og_image | default(url_for('static', filename='img/og-image.png', _external=True)) }}">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="en_US">
+
+{# --- Twitter Card --- #}
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{{ page_title | default('Gecko Agent — AI agent in your Chrome side panel') }}">
+<meta name="twitter:description" content="{{ page_description | default('AI-powered agentic browser automation assistant.') }}">
+<meta name="twitter:image" content="{{ og_image | default(url_for('static', filename='img/og-image.png', _external=True)) }}">
+
+{# --- Favicons --- #}
+{# Phase 1 : on pointe vers les fichiers à venir. Pas grave si 404 temporairement. #}
+<link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
+<link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='apple-touch-icon.png') }}">
+
+{# --- Theme color (barre d'adresse mobile) --- #}
+<meta name="theme-color" content="#0b0b0b">
+
+{# --- JSON-LD Schema.org SoftwareApplication --- #}
+{# Améliore l'affichage Google (rich results) et la compréhension de la nature du produit #}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Gecko Agent",
+  "operatingSystem": "Chrome",
+  "applicationCategory": "BrowserApplication",
+  "description": "AI-powered agentic browser automation assistant in Chrome's side panel.",
+  "url": "{{ request.host_url }}",
+  "downloadUrl": "{{ config.CHROME_WEBSTORE_URL }}",
+  "softwareVersion": "0.1.0",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  }
+}
+</script>

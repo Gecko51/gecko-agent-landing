@@ -1,0 +1,55 @@
+# --- Python ---
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg
+*.egg-info/
+.eggs/
+
+# --- Environnements virtuels ---
+.venv/
+venv/
+env/
+ENV/
+
+# --- Variables d'env ---
+.env
+.env.local
+.env.*.local
+
+# --- Flask / Instance ---
+instance/
+*.sqlite
+*.sqlite3
+*.db
+
+# --- Tests / Linters ---
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# --- Build / Distribution ---
+build/
+dist/
+*.log
+
+# --- Node (Tailwind CLI) ---
+node_modules/
+
+# --- IDE ---
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# --- OS ---
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# --- Claude Code ---
+.claude/settings.local.json

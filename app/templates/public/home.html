@@ -1,0 +1,83 @@
+{#
+  public/home.html — Landing principale (page d'accueil).
+
+  Phase 1 : hero placeholder seul.
+  Phase 2 : ajout des sections Features, How it works, Tools.
+  Phase 3 : ajout Models, FAQ, Waitlist, Footer enrichi.
+
+  Tous les textes visibles utilisateur sont en ANGLAIS.
+#}
+{% extends "base.html" %}
+
+{# Surcharge des meta du seo_head pour cette page spécifique #}
+{% set page_title = "Gecko Agent — AI agent in your Chrome side panel" %}
+{% set page_description = "Automate browser tasks with a conversational AI. Read pages, fill forms, extract data on LinkedIn and Airtable — all from a Chrome side panel." %}
+
+{% block content %}
+  {# ============================================================== #}
+  {# Section Hero — placeholder Phase 1                              #}
+  {# Phase 2 : ajout visuel produit + animation + sous-arguments     #}
+  {# ============================================================== #}
+  <section class="relative overflow-hidden">
+    <div class="mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-28 lg:px-8 lg:py-32">
+
+      <div class="mx-auto max-w-3xl text-center">
+
+        {# Badge "Open source" pour rassurer dev + tech-savvy #}
+        <div class="mb-6 inline-flex items-center rounded-full border border-border bg-muted px-3 py-1 text-xs font-medium text-muted-foreground">
+          <span class="mr-2 inline-block h-1.5 w-1.5 rounded-full bg-foreground"></span>
+          Open source · MIT licensed · Manifest V3
+        </div>
+
+        {# Titre principal — court, accrocheur, dit ce que c'est en 1 phrase #}
+        <h1 class="text-4xl font-bold tracking-tight text-foreground sm:text-5xl lg:text-6xl">
+          Your AI agent,
+          <br class="hidden sm:block">
+          right in your Chrome side panel.
+        </h1>
+
+        {# Sous-titre — précise le bénéfice et le périmètre #}
+        <p class="mt-6 text-lg leading-relaxed text-muted-foreground sm:text-xl">
+          Gecko Agent reads web pages, clicks, types, and runs multi-step workflows
+          for you. Connect any LLM via OpenRouter and let it think, act, and
+          observe — until the task is done.
+        </p>
+
+        {# CTAs principaux — Chrome Web Store + GitHub #}
+        <div class="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
+
+          <a
+            href="{{ config.CHROME_WEBSTORE_URL }}"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex w-full items-center justify-center rounded-md bg-primary px-6 py-3 text-base font-semibold text-primary-foreground hover:opacity-90 transition-opacity sm:w-auto"
+          >
+            Install on Chrome — Free
+          </a>
+
+          <a
+            href="{{ config.GITHUB_REPO_URL }}"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex w-full items-center justify-center rounded-md border border-border bg-background px-6 py-3 text-base font-semibold text-foreground hover:bg-muted transition-colors sm:w-auto"
+          >
+            View on GitHub
+          </a>
+
+        </div>
+
+        {# Petite mention sous les CTAs — rassure sur les coûts #}
+        <p class="mt-6 text-sm text-muted-foreground">
+          Free and open source. Bring your own OpenRouter API key.
+        </p>
+
+      </div>
+    </div>
+  </section>
+
+  {# ============================================================== #}
+  {# Sections Phase 2-3 à venir ici (Features, How it works, Tools, #}
+  {# Models, FAQ, Waitlist CTA…)                                    #}
+  {# ============================================================== #}
+
+{% endblock %}

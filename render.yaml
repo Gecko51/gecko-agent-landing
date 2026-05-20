@@ -1,0 +1,25 @@
+# =============================================================================
+# Configuration Render.com (Infrastructure as Code)
+# Render utilise ce fichier pour configurer le service au moment du déploiement.
+# Docs : https://render.com/docs/blueprint-spec
+# =============================================================================
+
+services:
+  - type: web
+    name: gecko-agent-landing
+    runtime: python
+    plan: free                # Free tier, à upgrader si trafic
+    region: frankfurt         # Plus proche utilisateurs EU
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn wsgi:app --workers 2 --bind 0.0.0.0:$PORT
+    healthCheckPath: /healthz # Endpoint healthcheck Render
+    autoDeploy: true          # Deploy auto sur push main
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.13.7
+      - key: FLASK_ENV
+        value: production
+      - key: FLASK_DEBUG
+        value: "0"
+      - key: SECRET_KEY
+        generateValue: true   # Render génère une clé aléatoire à la création

@@ -1,0 +1,55 @@
+# =============================================================================
+# Gecko Agent Landing — Configuration des outils de qualité
+# Centralise ruff, black, mypy pour éviter les fichiers de config éparpillés.
+# =============================================================================
+
+[tool.black]
+# Longueur de ligne : 100 (compromis entre lisibilité et densité)
+line-length = 100
+target-version = ["py312", "py313"]
+include = '\.pyi?$'
+exclude = '''
+/(
+    \.venv
+  | \.git
+  | \.mypy_cache
+  | \.ruff_cache
+  | build
+  | dist
+  | migrations/versions
+)/
+'''
+
+[tool.ruff]
+# Mêmes exclusions que black
+line-length = 100
+target-version = "py312"
+exclude = [
+    ".venv",
+    "migrations/versions",
+    "build",
+    "dist",
+]
+
+[tool.ruff.lint]
+# Règles activées : pyflakes (F), pycodestyle (E,W), isort (I),
+# pyupgrade (UP), bugbear (B), simplify (SIM), comprehensions (C4)
+select = ["E", "W", "F", "I", "UP", "B", "SIM", "C4"]
+ignore = [
+    "E501",  # Géré par black
+]
+
+[tool.ruff.lint.per-file-ignores]
+# Tests : autoriser les fixtures avec underscore et les asserts
+"tests/**/*.py" = ["B011"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = false  # Démarrage souple, on durcira au fil des phases
+ignore_missing_imports = true
+exclude = ["migrations/", ".venv/"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+addopts = "-v --tb=short"
