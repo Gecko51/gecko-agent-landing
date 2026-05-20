@@ -47,6 +47,9 @@ def create_app(config_class: type | None = None) -> Flask:
     # Crée le dossier instance/ s'il n'existe pas (silencieux si déjà présent)
     os.makedirs(app.instance_path, exist_ok=True)
 
+    # Initialise les extensions (db, migrate, csrf, limiter)
+    _register_extensions(app)
+
     # Enregistre les blueprints (un par domaine fonctionnel)
     _register_blueprints(app)
 
@@ -57,6 +60,24 @@ def create_app(config_class: type | None = None) -> Flask:
     _register_context_processors(app)
 
     return app
+
+
+def _register_extensions(app: Flask) -> None:
+    """Initialise toutes les extensions Flask sur l'instance d'app.
+
+    Important : importer les modèles APRÈS db.init_app pour qu'Alembic les
+    détecte lors des migrations autogenerate.
+    """
+    from app.extensions import csrf, db, limiter, migrate
+
+    db.init_app(app)
+    migrate.init_app(app, db)
+    csrf.init_app(app)
+    limiter.init_app(app)
+
+    # Import des modèles pour qu'Alembic puisse les voir
+    # noqa F401 : import volontaire pour le side-effect (enregistrement métadonnées)
+    from app import models  # noqa: F401
 
 
 def _register_context_processors(app: Flask) -> None:
@@ -73,8 +94,10 @@ def _register_blueprints(app: Flask) -> None:
     les imports circulaires si un blueprint a besoin de `current_app`.
     """
     from app.blueprints.public import public_bp
+    from app.blueprints.waitlist import waitlist_bp
 
     app.register_blueprint(public_bp)
+    app.register_blueprint(waitlist_bp)
 
 
 def _register_error_handlers(app: Flask) -> None:

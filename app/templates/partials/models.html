@@ -1,0 +1,85 @@
+{#
+  partials/models.html — Section "Models".
+
+  Met en avant le multi-modèle via OpenRouter : l'utilisateur garde le contrôle
+  total sur le LLM utilisé (qualité vs coût vs vitesse).
+
+  Design en grayscale pur (cohérent avec l'extension) — pas de logos officiels
+  qui seraient out-of-date et juridiquement risqués.
+#}
+
+{# Liste des modèles supportés. Mêmes versions que dans le README de l'extension. #}
+{% set models = [
+  {
+    "initial": "A",
+    "name": "Claude 4.6 Opus",
+    "provider": "Anthropic",
+    "best_for": "Complex reasoning, code generation"
+  },
+  {
+    "initial": "O",
+    "name": "GPT-5.4",
+    "provider": "OpenAI",
+    "best_for": "General-purpose tasks"
+  },
+  {
+    "initial": "G",
+    "name": "Gemini 3.0 Flash",
+    "provider": "Google",
+    "best_for": "Fast responses, simple tasks"
+  },
+  {
+    "initial": "M",
+    "name": "Llama 3.3 70B",
+    "provider": "Meta",
+    "best_for": "Open-source alternative"
+  }
+] %}
+
+<section id="models" class="border-t border-border bg-muted/30 scroll-mt-20">
+  <div class="mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-24 lg:px-8">
+
+    {# --- En-tête de section --- #}
+    <div class="mx-auto max-w-2xl text-center">
+      <p class="text-sm font-medium uppercase tracking-wider text-muted-foreground">Models</p>
+      <h2 class="mt-3 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+        Pick your favorite LLM. Switch anytime.
+      </h2>
+      <p class="mt-4 text-base text-muted-foreground">
+        Gecko Agent connects via OpenRouter — one API key, every major model. Bring your own key, pay only what you use.
+      </p>
+    </div>
+
+    {# --- Grille des modèles ---
+        2 cols sur tablet, 4 cols sur desktop. 1 col sur mobile. #}
+    <div class="mt-14 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+
+      {% for m in models %}
+        <article class="rounded-lg border border-border bg-card p-5 transition-colors hover:bg-card">
+
+          {# Initiale du provider dans un cercle (placeholder visuel propre) #}
+          <div class="inline-flex h-10 w-10 items-center justify-center rounded-full bg-primary text-primary-foreground font-bold text-base">
+            {{ m.initial }}
+          </div>
+
+          <h3 class="mt-4 text-base font-semibold text-foreground">{{ m.name }}</h3>
+          <p class="mt-1 text-xs uppercase tracking-wider text-muted-foreground">{{ m.provider }}</p>
+          <p class="mt-3 text-sm text-muted-foreground">{{ m.best_for }}</p>
+
+        </article>
+      {% endfor %}
+
+    </div>
+
+    {# --- Banner "any model" en dessous des 4 modèles --- #}
+    <div class="mt-6 rounded-lg border border-dashed border-border bg-background p-6 text-center">
+      <p class="text-base font-semibold text-foreground">
+        + Any of the 300+ models on OpenRouter
+      </p>
+      <p class="mt-1 text-sm text-muted-foreground">
+        Mistral, DeepSeek, Qwen, Command R, and many more. Switch in two clicks from the Settings tab.
+      </p>
+    </div>
+
+  </div>
+</section>

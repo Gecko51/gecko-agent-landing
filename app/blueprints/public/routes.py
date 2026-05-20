@@ -24,6 +24,20 @@ def home() -> str:
     return render_template("public/home.html")
 
 
+@public_bp.route("/privacy", methods=["GET"])
+def privacy() -> str:
+    """Rendu de la page Privacy Policy.
+
+    Le contenu est statique (template public/privacy.html), basé sur le PRIVACY.md
+    du repo extension. Toute modification du privacy se fait dans le template,
+    pas via un CMS — c'est volontaire pour garder la trace dans Git.
+
+    Returns:
+        HTML rendu via le template public/privacy.html.
+    """
+    return render_template("public/privacy.html")
+
+
 @public_bp.route("/favicon.ico", methods=["GET"])
 def favicon():  # type: ignore[no-untyped-def]
     """Sert le logo PNG à l'URL /favicon.ico.

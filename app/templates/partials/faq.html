@@ -1,0 +1,91 @@
+{#
+  partials/faq.html — Section "FAQ" (Frequently Asked Questions).
+
+  Utilise les éléments HTML natifs <details> + <summary> :
+  - 100% accessible sans JS (clavier Tab + Enter)
+  - Sémantique correcte pour les lecteurs d'écran
+  - Pas de dépendance externe, pas d'animation à gérer
+  - L'utilisateur peut ouvrir plusieurs panneaux simultanément
+    (si tu veux le comportement "un seul ouvert", il faudra ajouter du JS)
+#}
+
+{# Les 8 questions/réponses les plus probables. Anticiper les objections. #}
+{% set faq_items = [
+  {
+    "q": "Is Gecko Agent free?",
+    "a": "Yes, the extension is 100% free and open source (MIT license). The only cost is your LLM usage on OpenRouter — pay-as-you-go, typically a few cents per task. You bring your own API key, we never see your traffic."
+  },
+  {
+    "q": "Do I need to know how to code?",
+    "a": "No. You talk to the agent in plain English (or any language). It picks the right browser actions for you. The only one-time setup is installing the extension and pasting your OpenRouter API key — guided onboarding handles both in under 60 seconds."
+  },
+  {
+    "q": "Which LLM models can I use?",
+    "a": "Claude (Opus, Sonnet, Haiku), GPT (5, 4o, 4 Turbo), Gemini (Pro, Flash), Llama, Mistral, DeepSeek, Qwen — and 300+ other models available on OpenRouter. Switch between them in two clicks from the Settings tab."
+  },
+  {
+    "q": "Is my data safe?",
+    "a": "Yes. Your API key, conversation history, and prompts are stored locally in Chrome's secure storage — never sent to our servers (we don't have servers handling your data). The agent only sends what's needed to OpenRouter when you trigger a task. Read our full Privacy Policy for details."
+  },
+  {
+    "q": "Why OpenRouter and not a built-in API key?",
+    "a": "Because you stay in control. You see exactly what you spend, you can switch providers anytime, and we never become a middleman who can throttle you or change pricing. Your key, your bill, your data."
+  },
+  {
+    "q": "Does it really work on LinkedIn and Airtable?",
+    "a": "Yes — these are first-class supported use cases. LinkedIn has dedicated JSON-LD extraction for clean profile data, and Airtable benefits from the click_text and type_text tools that bypass dynamic CSS classes. Other complex web apps (Notion, Salesforce, Gmail) also work, but may need a more detailed prompt."
+  },
+  {
+    "q": "Can the agent break things or click on something dangerous?",
+    "a": "The agent only runs when you trigger a task, and you can hit the Stop button at any time mid-execution. It cannot install software, change browser settings, or access tabs you haven't authorized. For destructive actions (delete, submit payments), we recommend supervising the first few runs and adjusting your prompts."
+  },
+  {
+    "q": "Where can I report bugs or request features?",
+    "a": "Open an issue on our GitHub repository. We read everything and ship fixes regularly. Pull requests are welcome too — the codebase follows strict TypeScript + clean architecture conventions documented in DEV-RULES.md."
+  }
+] %}
+
+<section id="faq" class="border-t border-border bg-background scroll-mt-20">
+  <div class="mx-auto max-w-4xl px-4 py-20 sm:px-6 sm:py-24 lg:px-8">
+
+    {# --- En-tête de section --- #}
+    <div class="mx-auto max-w-2xl text-center">
+      <p class="text-sm font-medium uppercase tracking-wider text-muted-foreground">FAQ</p>
+      <h2 class="mt-3 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+        Questions, answered.
+      </h2>
+      <p class="mt-4 text-base text-muted-foreground">
+        Still on the fence? Here are the eight things people ask us most.
+      </p>
+    </div>
+
+    {# --- Liste des Q/R en accordéon natif ---
+        On stack toutes les <details> dans un container avec borders entre items. #}
+    <div class="mt-12 divide-y divide-border rounded-lg border border-border bg-card">
+
+      {% for item in faq_items %}
+        <details class="group">
+
+          {# Summary = la question, cliquable / focus clavier #}
+          <summary class="flex cursor-pointer list-none items-start justify-between gap-4 px-6 py-5 transition-colors hover:bg-muted/40">
+            <span class="text-base font-semibold text-foreground">{{ item.q }}</span>
+
+            {# Icône chevron qui pivote quand details est ouvert
+               (sélecteur group-open:rotate-180 = quand le parent <details> a [open]) #}
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mt-0.5 h-5 w-5 shrink-0 text-muted-foreground transition-transform group-open:rotate-180" aria-hidden="true">
+              <path d="m6 9 6 6 6-6"/>
+            </svg>
+          </summary>
+
+          {# Réponse (visible quand details est ouvert) #}
+          <div class="px-6 pb-5 text-sm leading-relaxed text-muted-foreground">
+            {{ item.a }}
+          </div>
+
+        </details>
+      {% endfor %}
+
+    </div>
+
+  </div>
+</section>

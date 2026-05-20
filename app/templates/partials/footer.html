@@ -1,47 +1,111 @@
 {#
   partials/footer.html — Footer global présent sur toutes les pages.
 
-  Phase 1 : version minimale (copyright + lien GitHub + lien MIT).
-  Phase 3 : ajout des liens privacy, terms, contact.
+  Phase 3 : footer enrichi avec 3 colonnes (Product / Resources / Brand).
+  Sur mobile : stack vertical. Sur tablet+ : 3 cols horizontales.
 #}
 <footer class="border-t border-border bg-background">
-  <div class="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
+  <div class="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
 
-    <div class="flex flex-col items-center justify-between gap-4 sm:flex-row">
+    {# --- Bandeau supérieur : 3 colonnes de navigation --- #}
+    <div class="grid grid-cols-1 gap-10 sm:grid-cols-3 sm:gap-8">
 
-      {# --- Copyright + tagline --- #}
-      <p class="text-sm text-muted-foreground">
-        &copy; {{ current_year | default(2026) }} Gecko Agent. Open source, MIT licensed.
-      </p>
+      {# --- Colonne 1 : Brand + tagline --- #}
+      <div>
+        <a href="{{ url_for('public.home') }}" class="flex items-center gap-2 font-semibold text-foreground" aria-label="Gecko Agent — homepage">
+          <img
+            src="{{ url_for('static', filename='img/logo.png') }}"
+            alt="Gecko Agent logo"
+            width="32"
+            height="32"
+            class="h-8 w-8"
+            decoding="async"
+          />
+          <span class="text-base">Gecko Agent</span>
+        </a>
+        <p class="mt-4 max-w-xs text-sm text-muted-foreground">
+          AI-powered agentic browser automation in your Chrome side panel. Open source, MIT licensed.
+        </p>
+      </div>
 
-      {# --- Liens --- #}
-      <nav class="flex items-center gap-4 text-sm text-muted-foreground">
-        <a
-          href="{{ config.GITHUB_REPO_URL }}"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="hover:text-foreground transition-colors"
-        >
-          GitHub
-        </a>
-        <a
-          href="{{ config.GITHUB_REPO_URL }}/blob/main/PRIVACY.md"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="hover:text-foreground transition-colors"
-        >
-          Privacy
-        </a>
-        <a
-          href="{{ config.GITHUB_REPO_URL }}/blob/main/LICENSE"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="hover:text-foreground transition-colors"
-        >
-          License
-        </a>
-      </nav>
+      {# --- Colonne 2 : Product (ancres vers les sections de la home) --- #}
+      <div>
+        <h3 class="text-sm font-semibold uppercase tracking-wider text-foreground">Product</h3>
+        <ul class="mt-4 space-y-3 text-sm">
+          <li><a href="{{ url_for('public.home') }}#features" class="text-muted-foreground hover:text-foreground transition-colors">Features</a></li>
+          <li><a href="{{ url_for('public.home') }}#how-it-works" class="text-muted-foreground hover:text-foreground transition-colors">How it works</a></li>
+          <li><a href="{{ url_for('public.home') }}#tools" class="text-muted-foreground hover:text-foreground transition-colors">Tools</a></li>
+          <li><a href="{{ url_for('public.home') }}#models" class="text-muted-foreground hover:text-foreground transition-colors">Supported models</a></li>
+          <li><a href="{{ url_for('public.home') }}#faq" class="text-muted-foreground hover:text-foreground transition-colors">FAQ</a></li>
+        </ul>
+      </div>
+
+      {# --- Colonne 3 : Resources (liens externes + page privacy interne) --- #}
+      <div>
+        <h3 class="text-sm font-semibold uppercase tracking-wider text-foreground">Resources</h3>
+        <ul class="mt-4 space-y-3 text-sm">
+          <li>
+            <a
+              href="{{ config.GITHUB_REPO_URL }}"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-muted-foreground hover:text-foreground transition-colors"
+            >
+              GitHub repository
+            </a>
+          </li>
+          <li>
+            <a
+              href="{{ config.CHROME_WEBSTORE_URL }}"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-muted-foreground hover:text-foreground transition-colors"
+            >
+              Chrome Web Store
+            </a>
+          </li>
+          <li>
+            <a
+              href="{{ url_for('public.privacy') }}"
+              class="text-muted-foreground hover:text-foreground transition-colors"
+            >
+              Privacy policy
+            </a>
+          </li>
+          <li>
+            <a
+              href="{{ config.GITHUB_REPO_URL }}/blob/main/LICENSE"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-muted-foreground hover:text-foreground transition-colors"
+            >
+              MIT License
+            </a>
+          </li>
+          <li>
+            <a
+              href="{{ config.GITHUB_REPO_URL }}/issues/new"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-muted-foreground hover:text-foreground transition-colors"
+            >
+              Report a bug
+            </a>
+          </li>
+        </ul>
+      </div>
 
     </div>
+
+    {# --- Séparateur + bandeau inférieur --- #}
+    <div class="mt-12 flex flex-col items-center justify-between gap-4 border-t border-border pt-8 sm:flex-row">
+      <p class="text-sm text-muted-foreground">
+        &copy; {{ current_year | default(2026) }} Gecko Agent. All rights reserved.
+      </p>
+      <p class="text-sm text-muted-foreground">
+        Built by <a href="https://geckodesign.fr" target="_blank" rel="noopener noreferrer" class="font-medium text-foreground hover:underline">Gecko Mind</a>
+      </p>
+    </div>
+
   </div>
 </footer>

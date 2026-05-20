@@ -1,0 +1,101 @@
+{#
+  partials/waitlist_cta.html — Section finale d'inscription à la waitlist.
+
+  Design : section pleine largeur en bg-foreground (inversé : fond noir, texte blanc)
+  pour créer un contraste fort en bas de page et pousser à l'action.
+
+  Le formulaire soumet via JS (fetch AJAX) vers POST /waitlist.
+  Fallback sans JS : le form fonctionne aussi avec une soumission classique
+  (HTML form action="/waitlist") mais l'utilisateur n'aura pas de feedback inline.
+#}
+<section id="waitlist" class="border-t border-border bg-foreground text-background scroll-mt-20">
+  <div class="mx-auto max-w-3xl px-4 py-20 sm:px-6 sm:py-24 lg:px-8">
+
+    <div class="text-center">
+
+      {# Tagline #}
+      <p class="text-sm font-medium uppercase tracking-wider text-background/60">Coming soon to Chrome Web Store</p>
+
+      {# Titre principal #}
+      <h2 class="mt-3 text-3xl font-bold tracking-tight sm:text-4xl">
+        Get notified when we ship.
+      </h2>
+
+      {# Sous-titre rassurant : faible engagement, pas de spam #}
+      <p class="mt-4 text-base text-background/70">
+        One email when Gecko Agent goes live on the Chrome Web Store. No spam, no newsletter — promise.
+      </p>
+
+      {# --- Formulaire ---
+          - action pointe vers POST /waitlist (fallback no-JS)
+          - novalidate désactive la validation HTML5 native (on gère côté serveur)
+          - data-waitlist-form pour cibler en JS sans casser si on supprime la classe #}
+      <form
+        id="waitlist-form"
+        action="{{ url_for('waitlist.subscribe') }}"
+        method="POST"
+        novalidate
+        data-waitlist-form
+        class="mx-auto mt-10 flex max-w-md flex-col gap-3 sm:flex-row"
+      >
+
+        {# CSRF token — Flask-WTF accepte aussi via header X-CSRFToken (utilisé par AJAX) #}
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+        {# Source pour analytics : sait qu'on vient de la section bas de page #}
+        <input type="hidden" name="source" value="waitlist_cta">
+
+        {# Honeypot : caché en CSS (sr-only + tabindex=-1 + autocomplete=off).
+            Les bots qui remplissent automatiquement TOUS les champs se trahiront. #}
+        <div class="sr-only" aria-hidden="true">
+          <label for="waitlist-website">Website (leave empty)</label>
+          <input
+            type="text"
+            id="waitlist-website"
+            name="website"
+            tabindex="-1"
+            autocomplete="off"
+            value=""
+          >
+        </div>
+
+        {# Champ email visible — c'est le seul que l'utilisateur remplit #}
+        <label for="waitlist-email" class="sr-only">Email address</label>
+        <input
+          type="email"
+          id="waitlist-email"
+          name="email"
+          required
+          placeholder="you@company.com"
+          autocomplete="email"
+          class="flex-1 rounded-md border border-background/20 bg-background/10 px-4 py-3 text-base text-background placeholder:text-background/50 focus:border-background focus:outline-none focus:ring-2 focus:ring-background/50"
+        >
+
+        {# Bouton submit #}
+        <button
+          type="submit"
+          class="inline-flex shrink-0 items-center justify-center rounded-md bg-background px-6 py-3 text-base font-semibold text-foreground hover:opacity-90 transition-opacity disabled:cursor-not-allowed disabled:opacity-50"
+          data-waitlist-submit
+        >
+          Notify me
+        </button>
+
+      </form>
+
+      {# Zone de feedback (success / error) — masquée par défaut, remplie par JS #}
+      <p
+        id="waitlist-feedback"
+        role="status"
+        aria-live="polite"
+        class="mt-4 hidden text-sm"
+        data-waitlist-feedback
+      ></p>
+
+      {# Mention légale courte #}
+      <p class="mt-6 text-xs text-background/50">
+        We'll only email you once, when the extension is published. Your email is stored encrypted and never shared.
+      </p>
+
+    </div>
+  </div>
+</section>

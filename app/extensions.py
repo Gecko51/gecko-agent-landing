@@ -1,32 +1,35 @@
 """Instanciation des extensions Flask (singletons partagés).
 
-Pourquoi ce fichier ?
-- Permet d'éviter les imports circulaires : tout module peut importer `db`
-  ou `csrf` sans dépendre de `app/__init__.py`.
-- Les extensions sont créées ici SANS app, puis attachées via `init_app(app)`
-  dans `create_app()`.
-
-Phase 1 : ce fichier est quasi vide. On le remplit au fur et à mesure
-des phases pour rester dans le pattern.
+Pattern : on instancie les extensions ICI sans app (pas d'init_app),
+puis create_app() appelle init_app() sur chacune. Ça évite les imports
+circulaires : tout module peut faire `from app.extensions import db` sans
+dépendre de app/__init__.py.
 """
 
 from __future__ import annotations
 
-# Exemples d'extensions à ajouter en Phase 3 (waitlist) :
-#
-# from flask_sqlalchemy import SQLAlchemy
-# from flask_migrate import Migrate
-# from flask_wtf.csrf import CSRFProtect
-# from flask_limiter import Limiter
-# from flask_limiter.util import get_remote_address
-#
-# db = SQLAlchemy()
-# migrate = Migrate()
-# csrf = CSRFProtect()
-# limiter = Limiter(key_func=get_remote_address)
-#
-# Puis dans create_app() :
-#   db.init_app(app)
-#   migrate.init_app(app, db)
-#   csrf.init_app(app)
-#   limiter.init_app(app)
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
+from flask_migrate import Migrate
+from flask_sqlalchemy import SQLAlchemy
+from flask_wtf.csrf import CSRFProtect
+
+# --- ORM & migrations ---
+# db : objet principal SQLAlchemy. Tous les modèles héritent de db.Model.
+db = SQLAlchemy()
+
+# migrate : intégration Alembic pour gérer les migrations de schéma versionées
+migrate = Migrate()
+
+# --- Sécurité ---
+# csrf : protection CSRF automatique sur tous les formulaires Flask-WTF
+csrf = CSRFProtect()
+
+# limiter : rate limiting global + spécifique par route
+# - key_func=get_remote_address : limite par IP (plus tard, par user_id si auth)
+# - default_limits : protection DoS basique sur toutes les routes
+# - storage_uri : configuré via Config.RATELIMIT_STORAGE_URI (memory en dev)
+limiter = Limiter(
+    key_func=get_remote_address,
+    default_limits=["200 per minute", "1000 per hour"],
+)

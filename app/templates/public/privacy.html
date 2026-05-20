@@ -1,0 +1,171 @@
+{#
+  public/privacy.html — Page Privacy Policy.
+
+  Contenu basé sur PRIVACY.md du repo extension (Gecko51/gecko-agent).
+  Mise en forme HTML statique pour rester sous contrôle Git (vs CMS markdown
+  parsé à la volée). Toute modif passe par un commit.
+#}
+{% extends "base.html" %}
+
+{% set page_title = "Privacy Policy — Gecko Agent" %}
+{% set page_description = "How Gecko Agent handles your data: no servers, no tracking. Everything stays in your browser." %}
+
+{% block content %}
+  <article class="mx-auto max-w-3xl px-4 py-16 sm:px-6 sm:py-20 lg:px-8">
+
+    {# --- En-tête article --- #}
+    <header class="border-b border-border pb-8">
+      <p class="text-sm font-medium uppercase tracking-wider text-muted-foreground">Legal</p>
+      <h1 class="mt-2 text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
+        Privacy Policy
+      </h1>
+      <p class="mt-3 text-sm text-muted-foreground">
+        Last updated: April 6, 2026
+      </p>
+    </header>
+
+    {# --- Sections du privacy ---
+        Utilise des espacements et typographies cohérents avec le reste du site. #}
+    <div class="mt-10 space-y-12">
+
+      {# --- 1. Overview --- #}
+      <section>
+        <h2 class="text-2xl font-bold tracking-tight text-foreground">1. Overview</h2>
+        <p class="mt-4 text-base leading-relaxed text-muted-foreground">
+          Gecko Agent is a Chrome extension that provides an AI-powered browser automation assistant running directly in Chrome's side panel. This Privacy Policy explains what data the extension accesses, how it is used, and what is never collected or transmitted.
+        </p>
+      </section>
+
+      {# --- 2. Data we don't collect --- #}
+      <section>
+        <h2 class="text-2xl font-bold tracking-tight text-foreground">2. Data We Do NOT Collect</h2>
+        <p class="mt-4 text-base leading-relaxed text-muted-foreground">
+          Gecko Agent does <strong class="font-semibold text-foreground">not</strong> collect, store, or transmit any personal user data to any server owned or operated by the developer. Specifically, the extension never collects:
+        </p>
+        <ul class="mt-4 space-y-2 pl-6 text-base text-muted-foreground list-disc marker:text-foreground">
+          <li>Names, email addresses, or any personally identifiable information</li>
+          <li>Browsing history</li>
+          <li>Financial or payment information</li>
+          <li>Health information</li>
+          <li>Authentication credentials</li>
+          <li>Location data</li>
+          <li>User activity patterns or analytics</li>
+        </ul>
+      </section>
+
+      {# --- 3. Data stored locally --- #}
+      <section>
+        <h2 class="text-2xl font-bold tracking-tight text-foreground">3. Data Stored Locally</h2>
+        <p class="mt-4 text-base leading-relaxed text-muted-foreground">
+          Gecko Agent stores the following data <strong class="font-semibold text-foreground">exclusively on your local device</strong>, using Chrome's built-in <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-sm text-foreground">chrome.storage</code> API. This data never leaves your browser:
+        </p>
+
+        <div class="mt-6 overflow-hidden rounded-lg border border-border">
+          <table class="min-w-full divide-y divide-border text-sm">
+            <thead class="bg-muted/40">
+              <tr>
+                <th class="px-4 py-3 text-left font-semibold text-foreground">Data</th>
+                <th class="px-4 py-3 text-left font-semibold text-foreground">Purpose</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-border text-muted-foreground">
+              <tr><td class="px-4 py-3 font-medium text-foreground">OpenRouter API key</td><td class="px-4 py-3">To authenticate requests to the LLM provider</td></tr>
+              <tr><td class="px-4 py-3 font-medium text-foreground">Selected AI model</td><td class="px-4 py-3">To remember your model preference</td></tr>
+              <tr><td class="px-4 py-3 font-medium text-foreground">Extension settings</td><td class="px-4 py-3">To save your configuration</td></tr>
+              <tr><td class="px-4 py-3 font-medium text-foreground">Conversation history</td><td class="px-4 py-3">To allow you to restore past sessions</td></tr>
+              <tr><td class="px-4 py-3 font-medium text-foreground">Custom prompt templates</td><td class="px-4 py-3">To save your reusable prompts</td></tr>
+              <tr><td class="px-4 py-3 font-medium text-foreground">Activity log</td><td class="px-4 py-3">To display tool execution history</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p class="mt-4 text-base leading-relaxed text-muted-foreground">
+          You can clear all locally stored data at any time by uninstalling the extension or using Chrome's extension data management tools.
+        </p>
+      </section>
+
+      {# --- 4. Data sent to third-party APIs --- #}
+      <section>
+        <h2 class="text-2xl font-bold tracking-tight text-foreground">4. Data Sent to Third-Party APIs</h2>
+        <p class="mt-4 text-base leading-relaxed text-muted-foreground">
+          When you send a message or trigger an agent action, the content of your request and the current page context are sent to the <a href="https://openrouter.ai/" target="_blank" rel="noopener noreferrer" class="font-medium text-foreground underline hover:no-underline">OpenRouter API</a> to generate a response. This is a direct API call initiated by you.
+        </p>
+        <ul class="mt-4 space-y-2 pl-6 text-base text-muted-foreground list-disc marker:text-foreground">
+          <li><strong class="font-semibold text-foreground">What is sent:</strong> Your chat message, conversation history, and page content (when read by the agent)</li>
+          <li><strong class="font-semibold text-foreground">What is NOT sent:</strong> Any personal account data, credentials, or information beyond what you explicitly include in your request</li>
+          <li><strong class="font-semibold text-foreground">Who receives it:</strong> OpenRouter and/or the underlying LLM provider you selected (e.g., Anthropic, OpenAI, Google)</li>
+        </ul>
+        <p class="mt-4 text-base leading-relaxed text-muted-foreground">
+          Please refer to <a href="https://openrouter.ai/privacy" target="_blank" rel="noopener noreferrer" class="font-medium text-foreground underline hover:no-underline">OpenRouter's Privacy Policy</a> and the respective LLM provider's policies for details.
+        </p>
+        <blockquote class="mt-6 border-l-4 border-border bg-muted/40 px-4 py-3 text-sm italic text-muted-foreground">
+          Your API key is stored locally and sent directly from your browser to OpenRouter. It is never transmitted to any server controlled by the Gecko Agent developer.
+        </blockquote>
+      </section>
+
+      {# --- 5. Permissions justification --- #}
+      <section>
+        <h2 class="text-2xl font-bold tracking-tight text-foreground">5. Permissions Justification</h2>
+        <p class="mt-4 text-base leading-relaxed text-muted-foreground">
+          The extension requests the following Chrome permissions, each serving a specific and necessary purpose:
+        </p>
+        <ul class="mt-4 space-y-3 pl-6 text-base text-muted-foreground list-disc marker:text-foreground">
+          <li><code class="rounded bg-muted px-1.5 py-0.5 font-mono text-sm text-foreground">sidePanel</code> — To display the assistant's chat interface in Chrome's side panel</li>
+          <li><code class="rounded bg-muted px-1.5 py-0.5 font-mono text-sm text-foreground">tabs</code> — To read the active tab's URL and title so the agent understands the current page context</li>
+          <li><code class="rounded bg-muted px-1.5 py-0.5 font-mono text-sm text-foreground">tabGroups</code> — To allow the agent to create or manage tab groups when explicitly requested</li>
+          <li><code class="rounded bg-muted px-1.5 py-0.5 font-mono text-sm text-foreground">storage</code> — To save preferences, history, and settings locally</li>
+          <li><code class="rounded bg-muted px-1.5 py-0.5 font-mono text-sm text-foreground">activeTab</code> — To access the currently active page content when you trigger an agent action</li>
+          <li><code class="rounded bg-muted px-1.5 py-0.5 font-mono text-sm text-foreground">scripting</code> — To inject content scripts that allow the agent to read the DOM and interact with page elements</li>
+          <li><strong class="font-semibold text-foreground">host permissions</strong> (<code class="rounded bg-muted px-1.5 py-0.5 font-mono text-sm text-foreground">https://*/*</code>, <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-sm text-foreground">http://*/*</code>) — Required because Gecko Agent is a general-purpose automation tool that must be able to operate on any website the user chooses to automate</li>
+        </ul>
+      </section>
+
+      {# --- 6. Remote code --- #}
+      <section>
+        <h2 class="text-2xl font-bold tracking-tight text-foreground">6. Remote Code</h2>
+        <p class="mt-4 text-base leading-relaxed text-muted-foreground">
+          Gecko Agent does <strong class="font-semibold text-foreground">not</strong> use remote code. All JavaScript executed by the extension is bundled within the extension package itself. The extension does not load, inject, or execute any external scripts from remote URLs.
+        </p>
+      </section>
+
+      {# --- 7. Children's privacy --- #}
+      <section>
+        <h2 class="text-2xl font-bold tracking-tight text-foreground">7. Children's Privacy</h2>
+        <p class="mt-4 text-base leading-relaxed text-muted-foreground">
+          Gecko Agent is not directed at children under the age of 13 and does not knowingly collect any information from children.
+        </p>
+      </section>
+
+      {# --- 8. Changes --- #}
+      <section>
+        <h2 class="text-2xl font-bold tracking-tight text-foreground">8. Changes to This Policy</h2>
+        <p class="mt-4 text-base leading-relaxed text-muted-foreground">
+          This Privacy Policy may be updated occasionally. Changes will be reflected in the "Last updated" date at the top of this document. Continued use of the extension after any changes constitutes acceptance of the updated policy.
+        </p>
+      </section>
+
+      {# --- 9. Contact --- #}
+      <section>
+        <h2 class="text-2xl font-bold tracking-tight text-foreground">9. Contact</h2>
+        <p class="mt-4 text-base leading-relaxed text-muted-foreground">
+          For any questions or concerns regarding this Privacy Policy, please open an issue on the GitHub repository:
+        </p>
+        <p class="mt-4">
+          <a href="{{ config.GITHUB_REPO_URL }}/issues" target="_blank" rel="noopener noreferrer" class="inline-flex items-center rounded-md border border-border bg-background px-4 py-2 text-sm font-medium text-foreground hover:bg-muted transition-colors">
+            Open an issue on GitHub
+          </a>
+        </p>
+      </section>
+
+    </div>
+
+    {# --- Mention finale --- #}
+    <footer class="mt-16 border-t border-border pt-8">
+      <p class="text-sm italic text-muted-foreground">
+        Gecko Agent is open source and licensed under the
+        <a href="{{ config.GITHUB_REPO_URL }}/blob/main/LICENSE" target="_blank" rel="noopener noreferrer" class="font-medium text-foreground underline hover:no-underline">MIT License</a>.
+      </p>
+    </footer>
+
+  </article>
+{% endblock %}

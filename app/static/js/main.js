@@ -1,16 +1,123 @@
 // =============================================================================
-// main.js — Scripts client globaux (Phase 1 : presque rien).
+// main.js — Scripts client globaux.
 //
-// Phase 2 : navigation par ancres avec offset header sticky.
-// Phase 3 : accordéon FAQ, soumission AJAX du form waitlist.
+// Phase 3 : soumission AJAX du formulaire waitlist + feedback inline.
+// Phase 4 : highlight de la nav active au scroll (intersection observer).
+//
+// Pas de framework. Vanilla JS ES2022, défensif (vérifie l'existence des éléments).
 // =============================================================================
 
 (() => {
   'use strict';
 
-  // Marqueur de chargement pour debug en console
-  // (utile pour vérifier que main.js a bien été chargé en prod)
+  // Marqueur de chargement utile en debug
   if (typeof window !== 'undefined') {
-    window.__GECKO_LANDING__ = { version: '0.1.0' };
+    window.__GECKO_LANDING__ = { version: '0.3.0' };
   }
+
+  /**
+   * Récupère le token CSRF injecté dans <meta name="csrf-token"> par base.html.
+   * Flask-WTF accepte ce token via le header X-CSRFToken pour les requêtes AJAX.
+   */
+  function getCsrfToken() {
+    const meta = document.querySelector('meta[name="csrf-token"]');
+    return meta ? meta.getAttribute('content') : '';
+  }
+
+  /**
+   * Soumission AJAX du formulaire waitlist.
+   * Empêche le rechargement de page, envoie en JSON, affiche le feedback inline.
+   *
+   * @param {HTMLFormElement} form - Le <form data-waitlist-form>
+   */
+  async function handleWaitlistSubmit(form) {
+    const submitBtn = form.querySelector('[data-waitlist-submit]');
+    const feedbackEl = form.parentElement.querySelector('[data-waitlist-feedback]');
+
+    // Désactive le bouton pour éviter les doubles clics
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Submitting…';
+    }
+
+    // Reset du feedback précédent
+    if (feedbackEl) {
+      feedbackEl.classList.add('hidden');
+      feedbackEl.textContent = '';
+    }
+
+    try {
+      // Construction du body x-www-form-urlencoded (Flask-WTF s'attend à ce format)
+      const formData = new FormData(form);
+
+      const response = await fetch(form.action, {
+        method: 'POST',
+        headers: {
+          'X-CSRFToken': getCsrfToken(),
+          'Accept': 'application/json',
+        },
+        body: formData,
+        // Pas de credentials needed : même origine
+      });
+
+      // Parse la réponse JSON (la route renvoie toujours du JSON sur 2xx/4xx)
+      let data = {};
+      try {
+        data = await response.json();
+      } catch {
+        // Si pas de JSON valide (erreur serveur 500), data reste vide
+      }
+
+      // --- Affichage du feedback ---
+      if (feedbackEl) {
+        feedbackEl.classList.remove('hidden');
+
+        if (response.ok && data.status === 'success') {
+          // Succès : message vert avec coche
+          feedbackEl.textContent = '✓ ' + (data.message || "You're on the list.");
+          feedbackEl.className = 'mt-4 text-sm text-green-400';
+          form.reset();
+        } else if (response.ok && data.status === 'already_subscribed') {
+          // Déjà inscrit : message info, pas une erreur visible
+          feedbackEl.textContent = 'ℹ ' + (data.message || "You're already on the list.");
+          feedbackEl.className = 'mt-4 text-sm text-background/80';
+        } else if (response.status === 429) {
+          // Rate limit
+          feedbackEl.textContent = '⚠ Too many attempts. Please wait a minute and try again.';
+          feedbackEl.className = 'mt-4 text-sm text-yellow-400';
+        } else {
+          // Erreur de validation ou serveur
+          const msg = data.message || 'Something went wrong. Please try again.';
+          feedbackEl.textContent = '✗ ' + msg;
+          feedbackEl.className = 'mt-4 text-sm text-red-400';
+        }
+      }
+    } catch (err) {
+      // Erreur réseau : connexion perdue, CORS, etc.
+      console.error('Waitlist submit failed:', err);
+      if (feedbackEl) {
+        feedbackEl.classList.remove('hidden');
+        feedbackEl.textContent = '✗ Network error. Please check your connection and try again.';
+        feedbackEl.className = 'mt-4 text-sm text-red-400';
+      }
+    } finally {
+      // Réactive le bouton dans tous les cas (succès ou erreur)
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Notify me';
+      }
+    }
+  }
+
+  // --- Bootstrap : attache les listeners au chargement du DOM ---
+  document.addEventListener('DOMContentLoaded', () => {
+    // Cherche tous les formulaires waitlist (au cas où on en a plusieurs sur la page)
+    document.querySelectorAll('[data-waitlist-form]').forEach((form) => {
+      form.addEventListener('submit', (event) => {
+        event.preventDefault();
+        handleWaitlistSubmit(form);
+      });
+    });
+  });
+
 })();

@@ -7,12 +7,12 @@
 Flask>=3.1.0,<4.0.0
 python-dotenv>=1.0.0
 
-# --- Phase 3 (waitlist) — à décommenter quand on attaque la Phase 3 ---
-# Flask-WTF>=1.2.1
-# Flask-SQLAlchemy>=3.1.1
-# Flask-Migrate>=4.0.5
-# Flask-Limiter>=3.5.0
-# email-validator>=2.1.0
+# --- Phase 3 (waitlist) — actif ---
+Flask-WTF>=1.2.1
+Flask-SQLAlchemy>=3.1.1
+Flask-Migrate>=4.0.5
+Flask-Limiter>=3.5.0
+email-validator>=2.1.0
 
 # --- Phase 5 (déploiement prod) — à décommenter pour le déploiement ---
 # Gunicorn ne fonctionne pas sur Windows (Unix-only).
