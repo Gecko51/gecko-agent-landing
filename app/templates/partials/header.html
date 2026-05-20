@@ -11,11 +11,16 @@
   <div class="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
 
     {# --- Logo + nom de marque --- #}
-    <a href="{{ url_for('public.home') }}" class="flex items-center gap-2 font-semibold text-foreground">
-      {# Placeholder logo — sera remplacé par le SVG du gecko en Phase 2 #}
-      <div class="flex h-8 w-8 items-center justify-center rounded-md bg-primary text-primary-foreground text-sm font-bold">
-        G
-      </div>
+    <a href="{{ url_for('public.home') }}" class="flex items-center gap-2 font-semibold text-foreground" aria-label="Gecko Agent — homepage">
+      {# Logo officiel : G anthracite avec point orange au centre #}
+      <img
+        src="{{ url_for('static', filename='img/logo.png') }}"
+        alt="Gecko Agent logo"
+        width="32"
+        height="32"
+        class="h-8 w-8"
+        decoding="async"
+      />
       <span class="text-base">Gecko Agent</span>
     </a>
 

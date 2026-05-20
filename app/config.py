@@ -60,6 +60,11 @@ class DevConfig(Config):
 
     DEBUG = True
     TESTING = False
+    # Recharge les templates Jinja2 à chaque requête sans redémarrer le serveur
+    # (sinon, en mode non-debug, les modifs HTML ne sont visibles qu'après restart)
+    TEMPLATES_AUTO_RELOAD = True
+    # Envoie les fichiers statiques avec un cache court pour voir les modifs CSS/JS rapidement
+    SEND_FILE_MAX_AGE_DEFAULT = 0
     # En dev, on accepte que SECRET_KEY soit la valeur par défaut (pas idéal mais OK)
 
 

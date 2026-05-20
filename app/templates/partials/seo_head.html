@@ -44,9 +44,12 @@
 <meta name="twitter:image" content="{{ og_image | default(url_for('static', filename='img/og-image.png', _external=True)) }}">
 
 {# --- Favicons --- #}
-{# Phase 1 : on pointe vers les fichiers à venir. Pas grave si 404 temporairement. #}
-<link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
-<link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='apple-touch-icon.png') }}">
+{# On utilise le logo officiel comme favicon. Pour un favicon multi-tailles propre
+   (16, 32, 180, 192, 512), passer le logo dans https://realfavicongenerator.net
+   et remplacer ces lignes en Phase 4. #}
+<link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='img/logo.png') }}">
+<link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='img/logo.png') }}">
+<link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='img/logo.png') }}">
 
 {# --- Theme color (barre d'adresse mobile) --- #}
 <meta name="theme-color" content="#0b0b0b">
