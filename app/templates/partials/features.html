@@ -1,0 +1,110 @@
+{#
+  partials/features.html — Section "Features".
+
+  Liste les 11 fonctionnalités principales de l'extension Gecko Agent,
+  affichées en grille responsive (1 col mobile, 2 cols tablet, 3 cols desktop).
+
+  Source des features : README.md du repo Gecko51/gecko-agent.
+  Tous les textes sont en ANGLAIS.
+#}
+{% import "_icons.html" as icon %}
+
+{# Liste des features. Pour ajouter/modifier une feature : éditer ce tableau.
+   `icon` doit correspondre à un macro défini dans templates/_icons.html. #}
+{% set features = [
+  {
+    "icon": "message_square_text",
+    "title": "AI Chat in Side Panel",
+    "desc": "Conversational interface that lives alongside your browsing — no tab switching, no context loss."
+  },
+  {
+    "icon": "layers",
+    "title": "Multi-Model Support",
+    "desc": "Pick Claude, GPT, Gemini, Llama, or any model available on OpenRouter. Bring your own API key."
+  },
+  {
+    "icon": "mouse_pointer_click",
+    "title": "9 Browser Automation Tools",
+    "desc": "Click, type, scroll, navigate, read pages, fill inputs, and more — all controlled by the agent."
+  },
+  {
+    "icon": "refresh_cw",
+    "title": "Agentic Loop",
+    "desc": "Configurable up to 40 iterations of think → act → observe for complex multi-step tasks."
+  },
+  {
+    "icon": "zap",
+    "title": "Real-Time Streaming",
+    "desc": "Token-by-token response display. See the agent think and act live, no spinner-and-wait UX."
+  },
+  {
+    "icon": "linkedin",
+    "title": "LinkedIn Optimization",
+    "desc": "Structured data extraction from LinkedIn profiles via JSON-LD. Perfect for sourcing and outreach."
+  },
+  {
+    "icon": "table",
+    "title": "Airtable Support",
+    "desc": "Smart text-based clicking handles Airtable's dynamic CSS classes that break traditional selectors."
+  },
+  {
+    "icon": "list_checks",
+    "title": "Activity Log",
+    "desc": "Track every tool execution with status, target, and timestamp — full transparency on what the agent did."
+  },
+  {
+    "icon": "history",
+    "title": "Conversation History",
+    "desc": "Save and restore past conversations. Pick up exactly where you left off, any time."
+  },
+  {
+    "icon": "file_code",
+    "title": "Custom Prompts",
+    "desc": "Create and manage reusable prompt templates. Build your own library of agent recipes."
+  },
+  {
+    "icon": "compass",
+    "title": "Guided Onboarding",
+    "desc": "Step-by-step first-launch setup. New users are productive within 60 seconds, no docs needed."
+  }
+] %}
+
+<section id="features" class="border-t border-border bg-background scroll-mt-20">
+  <div class="mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-24 lg:px-8">
+
+    {# --- En-tête de section --- #}
+    <div class="mx-auto max-w-2xl text-center">
+      <p class="text-sm font-medium uppercase tracking-wider text-muted-foreground">Features</p>
+      <h2 class="mt-3 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+        Everything you need to automate the browser.
+      </h2>
+      <p class="mt-4 text-base text-muted-foreground">
+        Eleven capabilities, zero fluff. Built for sales pros, recruiters, marketers, and anyone tired of repetitive web tasks.
+      </p>
+    </div>
+
+    {# --- Grille des features ---
+        Mobile : 1 col, Tablet (sm) : 2 cols, Desktop (lg) : 3 cols.
+        gap-6 (24px) entre cards : assez d'air pour respirer, assez serré pour ne pas isoler les cards. #}
+    <div class="mt-14 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+
+      {% for f in features %}
+        <article class="group rounded-lg border border-border bg-card p-6 transition-colors hover:bg-muted/40">
+
+          {# Icône dans un carré arrondi avec contraste primary -> primary-foreground #}
+          <div class="mb-4 inline-flex h-10 w-10 items-center justify-center rounded-md bg-primary text-primary-foreground">
+            {# Dispatch dynamique vers le bon macro via le filter attr().
+               `icon|attr('refresh_cw')` retourne le macro refresh_cw, qu'on appelle avec () #}
+            {{ (icon|attr(f.icon))() }}
+          </div>
+
+          <h3 class="text-base font-semibold text-foreground">{{ f.title }}</h3>
+          <p class="mt-2 text-sm leading-relaxed text-muted-foreground">{{ f.desc }}</p>
+
+        </article>
+      {% endfor %}
+
+    </div>
+
+  </div>
+</section>

@@ -1,0 +1,142 @@
+{#
+  partials/tools.html — Section "Available Tools".
+
+  Présente les 9 outils d'automatisation browser que le LLM peut appeler.
+  Format : table à 3 colonnes (Tool | Description | Example).
+
+  Sur mobile (< sm) : scroll horizontal sur le wrapper de la table.
+  Sur desktop : table pleine largeur.
+
+  Source : README.md du repo Gecko51/gecko-agent (section "Available Tools").
+#}
+{% import "_icons.html" as icon %}
+
+{# Les 9 outils browser exposés par l'extension #}
+{% set tools = [
+  {
+    "icon": "file_text",
+    "name": "read_page",
+    "desc": "Extracts the page content (HTML or structured text). Smart JSON-LD parsing on LinkedIn.",
+    "example": "Read this page and summarize it"
+  },
+  {
+    "icon": "globe",
+    "name": "goto_url",
+    "desc": "Navigates the current tab to a target URL.",
+    "example": "Go to https://example.com"
+  },
+  {
+    "icon": "external_link",
+    "name": "open_tab",
+    "desc": "Opens a new browser tab with a given URL.",
+    "example": "Open LinkedIn in a new tab"
+  },
+  {
+    "icon": "target",
+    "name": "click_selector",
+    "desc": "Clicks an element by CSS selector. Supports double-click.",
+    "example": "Click the submit button"
+  },
+  {
+    "icon": "mouse_pointer",
+    "name": "click_text",
+    "desc": "Finds and clicks an element by its visible text. Position control: on / right / below.",
+    "example": "Click the cell next to 'Company Name'"
+  },
+  {
+    "icon": "text_cursor_input",
+    "name": "fill_input",
+    "desc": "Fills a text input, textarea, or contenteditable element.",
+    "example": "Fill the email field with john@example.com"
+  },
+  {
+    "icon": "type",
+    "name": "type_text",
+    "desc": "Types text into the currently focused element, character by character.",
+    "example": "Type 'Hello' into the active cell"
+  },
+  {
+    "icon": "scroll",
+    "name": "scroll_page",
+    "desc": "Scrolls the page by a pixel amount or to a specific element.",
+    "example": "Scroll down to see more results"
+  },
+  {
+    "icon": "keyboard",
+    "name": "press_key",
+    "desc": "Presses a keyboard key (Tab, Enter, Escape, arrows…) with optional modifiers.",
+    "example": "Press Enter to submit"
+  }
+] %}
+
+<section id="tools" class="border-t border-border bg-background scroll-mt-20">
+  <div class="mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-24 lg:px-8">
+
+    {# --- En-tête de section --- #}
+    <div class="mx-auto max-w-2xl text-center">
+      <p class="text-sm font-medium uppercase tracking-wider text-muted-foreground">Available tools</p>
+      <h2 class="mt-3 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+        9 atomic browser actions, infinite combinations.
+      </h2>
+      <p class="mt-4 text-base text-muted-foreground">
+        The agent picks the right tool for each step and chains them until your task is done.
+      </p>
+    </div>
+
+    {# --- Table des outils ---
+        On wrap la table dans un div overflow-x-auto pour le scroll horizontal mobile.
+        Bordures sur la table elle-même pour un rendu "card" cohérent avec le reste. #}
+    <div class="mt-14 overflow-hidden rounded-lg border border-border bg-card">
+      <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-border text-sm">
+
+          {# --- Header de la table --- #}
+          <thead class="bg-muted/40">
+            <tr>
+              <th scope="col" class="px-6 py-3.5 text-left font-semibold text-foreground">Tool</th>
+              <th scope="col" class="px-6 py-3.5 text-left font-semibold text-foreground">Description</th>
+              <th scope="col" class="px-6 py-3.5 text-left font-semibold text-foreground">Example prompt</th>
+            </tr>
+          </thead>
+
+          {# --- Lignes : une par outil --- #}
+          <tbody class="divide-y divide-border">
+            {% for tool in tools %}
+              <tr class="transition-colors hover:bg-muted/30">
+
+                {# Colonne 1 : icône + nom de l'outil en monospace #}
+                <td class="whitespace-nowrap px-6 py-4">
+                  <div class="flex items-center gap-3">
+                    <span class="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-muted text-foreground">
+                      {{ (icon|attr(tool.icon))() }}
+                    </span>
+                    <code class="font-mono text-sm font-semibold text-foreground">{{ tool.name }}</code>
+                  </div>
+                </td>
+
+                {# Colonne 2 : description #}
+                <td class="px-6 py-4 text-muted-foreground">{{ tool.desc }}</td>
+
+                {# Colonne 3 : exemple de prompt naturel #}
+                <td class="px-6 py-4">
+                  <code class="rounded bg-muted px-2 py-1 font-mono text-xs text-foreground">{{ tool.example }}</code>
+                </td>
+
+              </tr>
+            {% endfor %}
+          </tbody>
+
+        </table>
+      </div>
+    </div>
+
+    {# --- Note pour les utilisateurs Airtable --- #}
+    <p class="mt-6 text-center text-sm text-muted-foreground">
+      <span class="font-semibold text-foreground">Airtable users:</span>
+      <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-xs">click_text</code> and
+      <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-xs">type_text</code>
+      are built for Airtable's dynamic CSS classes — they just work.
+    </p>
+
+  </div>
+</section>
