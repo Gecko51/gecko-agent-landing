@@ -55,7 +55,7 @@ def subscribe_email(
     if existing is not None:
         return SubscribeResult(
             status="already_subscribed",
-            message="You're already on the list — we'll notify you when we ship.",
+            message="You're already on the list, we'll notify you when we ship.",
         )
 
     # Création de l'entrée
@@ -75,7 +75,7 @@ def subscribe_email(
         db.session.rollback()
         return SubscribeResult(
             status="already_subscribed",
-            message="You're already on the list — we'll notify you when we ship.",
+            message="You're already on the list, we'll notify you when we ship.",
         )
     except Exception as exc:
         # Toute autre erreur BDD : on log et on renvoie une erreur générique.

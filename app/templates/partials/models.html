@@ -8,31 +8,31 @@
   qui seraient out-of-date et juridiquement risqués.
 #}
 
-{# Liste des modèles supportés. Mêmes versions que dans le README de l'extension. #}
+{# Liste des modèles supportés. Versions alignées sur les LLM disponibles en 2026. #}
 {% set models = [
   {
     "initial": "A",
-    "name": "Claude 4.6 Opus",
+    "name": "Claude 4.7 Opus",
     "provider": "Anthropic",
     "best_for": "Complex reasoning, code generation"
   },
   {
     "initial": "O",
-    "name": "GPT-5.4",
+    "name": "GPT-5.5",
     "provider": "OpenAI",
-    "best_for": "General-purpose tasks"
+    "best_for": "Agentic tasks"
   },
   {
     "initial": "G",
-    "name": "Gemini 3.0 Flash",
+    "name": "Gemini 3.5 Flash",
     "provider": "Google",
     "best_for": "Fast responses, simple tasks"
   },
   {
-    "initial": "M",
-    "name": "Llama 3.3 70B",
-    "provider": "Meta",
-    "best_for": "Open-source alternative"
+    "initial": "K",
+    "name": "Kimi K2.6",
+    "provider": "Moonshot AI",
+    "best_for": "Agentic tasks, open-weight"
   }
 ] %}
 
@@ -46,7 +46,7 @@
         Pick your favorite LLM. Switch anytime.
       </h2>
       <p class="mt-4 text-base text-muted-foreground">
-        Gecko Agent connects via OpenRouter — one API key, every major model. Bring your own key, pay only what you use.
+        Gecko Agent connects via OpenRouter, one API key, every major model. Bring your own key, pay only what you use.
       </p>
     </div>
 

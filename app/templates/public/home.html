@@ -10,8 +10,8 @@
 {% extends "base.html" %}
 
 {# Surcharge des meta du seo_head pour cette page spécifique #}
-{% set page_title = "Gecko Agent — AI agent in your Chrome side panel" %}
-{% set page_description = "Automate browser tasks with a conversational AI. Read pages, fill forms, extract data on LinkedIn and Airtable — all from a Chrome side panel." %}
+{% set page_title = "Gecko Agent / AI agent in your Chrome side panel" %}
+{% set page_description = "Automate browser tasks with a conversational AI. Read pages, fill forms, extract data on LinkedIn and Airtable, all from a Chrome side panel." %}
 
 {% block content %}
   {# ============================================================== #}
@@ -40,7 +40,7 @@
         <p class="mt-6 text-lg leading-relaxed text-muted-foreground sm:text-xl">
           Gecko Agent reads web pages, clicks, types, and runs multi-step workflows
           for you. Connect any LLM via OpenRouter and let it think, act, and
-          observe — until the task is done.
+          observe, until the task is done.
         </p>
 
         {# CTAs principaux — Chrome Web Store + GitHub #}
@@ -52,7 +52,16 @@
             rel="noopener noreferrer"
             class="inline-flex w-full items-center justify-center rounded-md bg-primary px-6 py-3 text-base font-semibold text-primary-foreground hover:opacity-90 transition-opacity sm:w-auto"
           >
-            Install on Chrome — Free
+            {# Icône Chrome (Lucide) : cercle externe + petit cercle au centre + 3 lignes
+               qui rappellent les pétales du logo officiel. currentColor → s'aligne sur primary-foreground. #}
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2 h-5 w-5" aria-hidden="true">
+              <circle cx="12" cy="12" r="10"/>
+              <circle cx="12" cy="12" r="4"/>
+              <line x1="21.17" x2="12" y1="8" y2="8"/>
+              <line x1="3.95" x2="8.54" y1="6.06" y2="14"/>
+              <line x1="10.88" x2="15.46" y1="21.94" y2="14"/>
+            </svg>
+            Install on Chrome / Free
           </a>
 
           <a

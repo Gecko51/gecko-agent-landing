@@ -16,8 +16,8 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
 {# Title + description par défaut — surchargés par les pages enfants si besoin #}
-<title>{{ page_title | default("Gecko Agent — AI agent in your Chrome side panel") }}</title>
-<meta name="description" content="{{ page_description | default('AI-powered agentic browser automation assistant. Read web pages, automate workflows, and execute multi-step tasks — all from a conversational chat in Chrome.') }}">
+<title>{{ page_title | default("Gecko Agent / AI agent in your Chrome side panel") }}</title>
+<meta name="description" content="{{ page_description | default('AI-powered agentic browser automation assistant. Read web pages, automate workflows, and execute multi-step tasks, all from a conversational chat in Chrome.') }}">
 
 {# Auteur + robots #}
 <meta name="author" content="Gecko Agent">
@@ -29,7 +29,7 @@
 {# --- Open Graph (Facebook, LinkedIn, Slack, Discord…) --- #}
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Gecko Agent">
-<meta property="og:title" content="{{ page_title | default('Gecko Agent — AI agent in your Chrome side panel') }}">
+<meta property="og:title" content="{{ page_title | default('Gecko Agent / AI agent in your Chrome side panel') }}">
 <meta property="og:description" content="{{ page_description | default('AI-powered agentic browser automation assistant. Read pages, automate workflows, execute multi-step tasks.') }}">
 <meta property="og:url" content="{{ page_url | default(request.url) }}">
 <meta property="og:image" content="{{ og_image | default(url_for('static', filename='img/og-image.png', _external=True)) }}">
@@ -39,7 +39,7 @@
 
 {# --- Twitter Card --- #}
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="{{ page_title | default('Gecko Agent — AI agent in your Chrome side panel') }}">
+<meta name="twitter:title" content="{{ page_title | default('Gecko Agent / AI agent in your Chrome side panel') }}">
 <meta name="twitter:description" content="{{ page_description | default('AI-powered agentic browser automation assistant.') }}">
 <meta name="twitter:image" content="{{ og_image | default(url_for('static', filename='img/og-image.png', _external=True)) }}">
 
@@ -81,7 +81,7 @@
   },
   "featureList": [
     "AI Chat in Chrome Side Panel",
-    "Multi-Model Support (Claude, GPT, Gemini, Llama via OpenRouter)",
+    "Multi-Model Support (Claude, GPT, Gemini, Kimi via OpenRouter)",
     "9 Browser Automation Tools (click, type, scroll, navigate, read)",
     "Agentic Loop up to 40 iterations",
     "Real-Time Token Streaming",

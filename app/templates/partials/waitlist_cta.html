@@ -1,99 +1,73 @@
 {#
-  partials/waitlist_cta.html — Section finale d'inscription à la waitlist.
+  partials/waitlist_cta.html — Section finale d'install (bottom funnel).
 
-  Design : section pleine largeur en bg-foreground (inversé : fond noir, texte blanc)
-  pour créer un contraste fort en bas de page et pousser à l'action.
+  L'extension est publiée sur le Chrome Web Store, donc on pousse à l'installation
+  directe plutôt qu'à l'inscription waitlist. Le backend /waitlist reste
+  fonctionnel et pourra être réutilisé pour une newsletter produit plus tard.
 
-  Le formulaire soumet via JS (fetch AJAX) vers POST /waitlist.
-  Fallback sans JS : le form fonctionne aussi avec une soumission classique
-  (HTML form action="/waitlist") mais l'utilisateur n'aura pas de feedback inline.
+  Design : fond noir (bg-foreground) pour créer un contraste fort en fin de page
+  et focaliser l'attention sur le CTA primaire.
 #}
-<section id="waitlist" class="border-t border-border bg-foreground text-background scroll-mt-20">
+<section id="install" class="border-t border-border bg-foreground text-background scroll-mt-20">
   <div class="mx-auto max-w-3xl px-4 py-20 sm:px-6 sm:py-24 lg:px-8">
 
     <div class="text-center">
 
-      {# Tagline #}
-      <p class="text-sm font-medium uppercase tracking-wider text-background/60">Coming soon to Chrome Web Store</p>
-
-      {# Titre principal #}
-      <h2 class="mt-3 text-3xl font-bold tracking-tight sm:text-4xl">
-        Get notified when we ship.
-      </h2>
-
-      {# Sous-titre rassurant : faible engagement, pas de spam #}
-      <p class="mt-4 text-base text-background/70">
-        One email when Gecko Agent goes live on the Chrome Web Store. No spam, no newsletter — promise.
+      {# Tagline : disponibilité immédiate #}
+      <p class="text-sm font-medium uppercase tracking-wider text-background/60">
+        Available now on Chrome Web Store
       </p>
 
-      {# --- Formulaire ---
-          - action pointe vers POST /waitlist (fallback no-JS)
-          - novalidate désactive la validation HTML5 native (on gère côté serveur)
-          - data-waitlist-form pour cibler en JS sans casser si on supprime la classe #}
-      <form
-        id="waitlist-form"
-        action="{{ url_for('waitlist.subscribe') }}"
-        method="POST"
-        novalidate
-        data-waitlist-form
-        class="mx-auto mt-10 flex max-w-md flex-col gap-3 sm:flex-row"
-      >
+      {# Titre principal : action directe #}
+      <h2 class="mt-3 text-3xl font-bold tracking-tight sm:text-4xl">
+        Install Gecko Agent in two clicks.
+      </h2>
 
-        {# CSRF token — Flask-WTF accepte aussi via header X-CSRFToken (utilisé par AJAX) #}
-        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      {# Sous-titre : rassure sur le prix et la liberté #}
+      <p class="mt-4 text-base text-background/70">
+        Free and open source. MIT licensed. Bring your own OpenRouter key and start automating in under 60 seconds.
+      </p>
 
-        {# Source pour analytics : sait qu'on vient de la section bas de page #}
-        <input type="hidden" name="source" value="waitlist_cta">
+      {# --- 2 CTAs côte à côte : Chrome Web Store (primaire) + GitHub (secondaire) --- #}
+      <div class="mx-auto mt-10 flex max-w-md flex-col items-stretch gap-3 sm:flex-row sm:justify-center">
 
-        {# Honeypot : caché en CSS (sr-only + tabindex=-1 + autocomplete=off).
-            Les bots qui remplissent automatiquement TOUS les champs se trahiront. #}
-        <div class="sr-only" aria-hidden="true">
-          <label for="waitlist-website">Website (leave empty)</label>
-          <input
-            type="text"
-            id="waitlist-website"
-            name="website"
-            tabindex="-1"
-            autocomplete="off"
-            value=""
-          >
-        </div>
-
-        {# Champ email visible — c'est le seul que l'utilisateur remplit #}
-        <label for="waitlist-email" class="sr-only">Email address</label>
-        <input
-          type="email"
-          id="waitlist-email"
-          name="email"
-          required
-          placeholder="you@company.com"
-          autocomplete="email"
-          class="flex-1 rounded-md border border-background/20 bg-background/10 px-4 py-3 text-base text-background placeholder:text-background/50 focus:border-background focus:outline-none focus:ring-2 focus:ring-background/50"
+        {# CTA primaire : Chrome Web Store (en inversé, blanc sur noir) #}
+        <a
+          href="{{ config.CHROME_WEBSTORE_URL }}"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex items-center justify-center rounded-md bg-background px-6 py-3 text-base font-semibold text-foreground hover:opacity-90 transition-opacity"
         >
+          {# Petite icône Chrome inline pour appuyer l'action #}
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2 h-5 w-5" aria-hidden="true">
+            <circle cx="12" cy="12" r="10"/>
+            <circle cx="12" cy="12" r="4"/>
+            <line x1="21.17" x2="12" y1="8" y2="8"/>
+            <line x1="3.95" x2="8.54" y1="6.06" y2="14"/>
+            <line x1="10.88" x2="15.46" y1="21.94" y2="14"/>
+          </svg>
+          Add to Chrome
+        </a>
 
-        {# Bouton submit #}
-        <button
-          type="submit"
-          class="inline-flex shrink-0 items-center justify-center rounded-md bg-background px-6 py-3 text-base font-semibold text-foreground hover:opacity-90 transition-opacity disabled:cursor-not-allowed disabled:opacity-50"
-          data-waitlist-submit
+        {# CTA secondaire : GitHub (bordure transparente sur fond noir) #}
+        <a
+          href="{{ config.GITHUB_REPO_URL }}"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex items-center justify-center rounded-md border border-background/30 bg-transparent px-6 py-3 text-base font-semibold text-background hover:bg-background/10 transition-colors"
         >
-          Notify me
-        </button>
+          {# Icône GitHub inline #}
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="mr-2 h-5 w-5" aria-hidden="true">
+            <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12Z"/>
+          </svg>
+          Star on GitHub
+        </a>
 
-      </form>
+      </div>
 
-      {# Zone de feedback (success / error) — masquée par défaut, remplie par JS #}
-      <p
-        id="waitlist-feedback"
-        role="status"
-        aria-live="polite"
-        class="mt-4 hidden text-sm"
-        data-waitlist-feedback
-      ></p>
-
-      {# Mention légale courte #}
+      {# Mention de réassurance finale #}
       <p class="mt-6 text-xs text-background/50">
-        We'll only email you once, when the extension is published. Your email is stored encrypted and never shared.
+        No credit card, no signup. Works on Chrome, Edge, Brave and any Chromium-based browser.
       </p>
 
     </div>

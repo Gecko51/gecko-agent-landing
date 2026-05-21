@@ -28,7 +28,7 @@ def test_home_contains_all_sections(client: FlaskClient) -> None:
     body = response.get_data(as_text=True)
 
     # On vérifie la présence des id de section
-    for section_id in ["features", "how-it-works", "tools", "models", "faq", "waitlist"]:
+    for section_id in ["features", "how-it-works", "tools", "models", "faq", "install"]:
         assert f'id="{section_id}"' in body, f"Section #{section_id} missing from home page"
 
 

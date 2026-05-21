@@ -7,7 +7,7 @@
 #}
 {% extends "base.html" %}
 
-{% set page_title = "Privacy Policy — Gecko Agent" %}
+{% set page_title = "Privacy Policy / Gecko Agent" %}
 {% set page_description = "How Gecko Agent handles your data: no servers, no tracking. Everything stays in your browser." %}
 
 {% block content %}
@@ -110,13 +110,13 @@
           The extension requests the following Chrome permissions, each serving a specific and necessary purpose:
         </p>
         <ul class="mt-4 space-y-3 pl-6 text-base text-muted-foreground list-disc marker:text-foreground">
-          <li><code class="rounded bg-muted px-1.5 py-0.5 font-mono text-sm text-foreground">sidePanel</code> — To display the assistant's chat interface in Chrome's side panel</li>
-          <li><code class="rounded bg-muted px-1.5 py-0.5 font-mono text-sm text-foreground">tabs</code> — To read the active tab's URL and title so the agent understands the current page context</li>
-          <li><code class="rounded bg-muted px-1.5 py-0.5 font-mono text-sm text-foreground">tabGroups</code> — To allow the agent to create or manage tab groups when explicitly requested</li>
-          <li><code class="rounded bg-muted px-1.5 py-0.5 font-mono text-sm text-foreground">storage</code> — To save preferences, history, and settings locally</li>
-          <li><code class="rounded bg-muted px-1.5 py-0.5 font-mono text-sm text-foreground">activeTab</code> — To access the currently active page content when you trigger an agent action</li>
-          <li><code class="rounded bg-muted px-1.5 py-0.5 font-mono text-sm text-foreground">scripting</code> — To inject content scripts that allow the agent to read the DOM and interact with page elements</li>
-          <li><strong class="font-semibold text-foreground">host permissions</strong> (<code class="rounded bg-muted px-1.5 py-0.5 font-mono text-sm text-foreground">https://*/*</code>, <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-sm text-foreground">http://*/*</code>) — Required because Gecko Agent is a general-purpose automation tool that must be able to operate on any website the user chooses to automate</li>
+          <li><code class="rounded bg-muted px-1.5 py-0.5 font-mono text-sm text-foreground">sidePanel</code>, to display the assistant's chat interface in Chrome's side panel</li>
+          <li><code class="rounded bg-muted px-1.5 py-0.5 font-mono text-sm text-foreground">tabs</code>, to read the active tab's URL and title so the agent understands the current page context</li>
+          <li><code class="rounded bg-muted px-1.5 py-0.5 font-mono text-sm text-foreground">tabGroups</code>, to allow the agent to create or manage tab groups when explicitly requested</li>
+          <li><code class="rounded bg-muted px-1.5 py-0.5 font-mono text-sm text-foreground">storage</code>, to save preferences, history, and settings locally</li>
+          <li><code class="rounded bg-muted px-1.5 py-0.5 font-mono text-sm text-foreground">activeTab</code>, to access the currently active page content when you trigger an agent action</li>
+          <li><code class="rounded bg-muted px-1.5 py-0.5 font-mono text-sm text-foreground">scripting</code>, to inject content scripts that allow the agent to read the DOM and interact with page elements</li>
+          <li><strong class="font-semibold text-foreground">host permissions</strong> (<code class="rounded bg-muted px-1.5 py-0.5 font-mono text-sm text-foreground">https://*/*</code>, <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-sm text-foreground">http://*/*</code>), required because Gecko Agent is a general-purpose automation tool that must be able to operate on any website the user chooses to automate</li>
         </ul>
       </section>
 
