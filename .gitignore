@@ -39,6 +39,7 @@ dist/
 
 # --- Node (Tailwind CLI) ---
 node_modules/
+# package-lock.json est volontairement commit pour reproductibilité des builds
 
 # --- IDE ---
 .vscode/

@@ -1,0 +1,123 @@
+/* =============================================================================
+ * tailwind.src.css — Source Tailwind CSS de la landing.
+ *
+ * Compilation :
+ *   npm run build:css     -> CSS minifié one-shot (utiliser avant deploy)
+ *   npm run watch:css     -> rebuild automatique pendant le dev
+ *
+ * Architecture Tailwind v4 :
+ *   - @import "tailwindcss" charge base + components + utilities
+ *   - @theme définit les design tokens (couleurs, radius, etc.)
+ *   - @source dirige le content scanning vers nos templates et JS
+ *
+ * IMPORTANT : les variables oklch sont COPIES EXACTES de l'extension
+ * (src/sidepanel/globals.css du repo Gecko51/gecko-agent).
+ * Ne pas modifier sans aligner les deux projets.
+ * ============================================================================= */
+
+@import "tailwindcss";
+
+/* --- Sources à scanner pour le tree-shaking ---
+   Tailwind v4 scanne automatiquement le dossier courant, mais on est explicite
+   pour s'assurer que tous nos templates sont vus, y compris les partials. */
+@source "../app/templates/**/*.html";
+@source "../app/static/js/**/*.js";
+
+/* --- Design tokens (palette neutral + radius) ---
+   Mêmes valeurs que globals.css de l'extension Chrome. */
+@theme {
+  /* Couleurs background + foreground */
+  --color-background: oklch(1 0 0);
+  --color-foreground: oklch(0.145 0 0);
+
+  /* Surfaces (cards, popovers) */
+  --color-card: oklch(1 0 0);
+  --color-card-foreground: oklch(0.145 0 0);
+  --color-popover: oklch(1 0 0);
+  --color-popover-foreground: oklch(0.145 0 0);
+
+  /* Primary (boutons, accents principaux) */
+  --color-primary: oklch(0.205 0 0);
+  --color-primary-foreground: oklch(0.985 0 0);
+
+  /* Secondary + Muted (zones discrètes) */
+  --color-secondary: oklch(0.97 0 0);
+  --color-secondary-foreground: oklch(0.205 0 0);
+  --color-muted: oklch(0.97 0 0);
+  --color-muted-foreground: oklch(0.556 0 0);
+
+  /* Accent (hover sur menus) */
+  --color-accent: oklch(0.97 0 0);
+  --color-accent-foreground: oklch(0.205 0 0);
+
+  /* Destructive (erreurs, suppressions) */
+  --color-destructive: oklch(0.577 0.245 27.325);
+  --color-destructive-foreground: oklch(0.577 0.245 27.325);
+
+  /* Borders + inputs */
+  --color-border: oklch(0.922 0 0);
+  --color-input: oklch(0.922 0 0);
+  --color-ring: oklch(0.708 0 0);
+
+  /* Couleurs de feedback (success/warning) — utilisées dans le JS du form waitlist */
+  --color-success: oklch(0.72 0.16 145);
+  --color-warning: oklch(0.78 0.15 80);
+
+  /* Border radius unique = celui de shadcn neutral */
+  --radius: 0.625rem;
+  --radius-lg: var(--radius);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-sm: calc(var(--radius) - 4px);
+
+  /* Police par défaut */
+  --font-sans: "Inter", system-ui, -apple-system, sans-serif;
+}
+
+/* --- Reset base + accessibilité globale ---
+   On surcharge la couche base de Tailwind pour appliquer notre palette
+   et nos préférences universelles (a11y, lecteurs d'écran). */
+@layer base {
+  /* Application de la palette neutre par défaut */
+  html {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Respect du prefers-reduced-motion (a11y WCAG 2.3.3) */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+
+  /* Focus visible custom — discret mais accessible (WCAG 2.4.7) */
+  :focus-visible {
+    outline: 2px solid var(--color-ring);
+    outline-offset: 2px;
+    border-radius: var(--radius);
+  }
+
+  /* Skip link : caché par défaut, visible au focus clavier */
+  .skip-to-content {
+    position: absolute;
+    top: -100px;
+    left: 1rem;
+    z-index: 100;
+    padding: 0.5rem 1rem;
+    background-color: var(--color-primary);
+    color: var(--color-primary-foreground);
+    border-radius: var(--radius);
+    text-decoration: none;
+    font-weight: 600;
+  }
+  .skip-to-content:focus {
+    top: 1rem;
+  }
+}

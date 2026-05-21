@@ -45,7 +45,7 @@
       </a>
     </nav>
 
-    {# --- CTAs --- #}
+    {# --- CTAs + bouton burger mobile --- #}
     <div class="flex items-center gap-2 sm:gap-3">
       {# CTA secondaire : GitHub (caché sur tout petit écran pour gagner de la place) #}
       <a
@@ -66,7 +66,48 @@
       >
         Install on Chrome
       </a>
+
+      {# Bouton burger : visible uniquement sur mobile/tablet (< lg) #}
+      <button
+        type="button"
+        class="lg:hidden inline-flex h-10 w-10 items-center justify-center rounded-md border border-border bg-background text-foreground hover:bg-muted transition-colors"
+        aria-label="Open menu"
+        aria-expanded="false"
+        aria-controls="mobile-menu"
+        data-mobile-menu-toggle
+      >
+        {# Icône hamburger : 3 lignes horizontales (visible quand menu fermé) #}
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5" data-mobile-menu-icon="closed">
+          <line x1="4" x2="20" y1="6" y2="6"/>
+          <line x1="4" x2="20" y1="12" y2="12"/>
+          <line x1="4" x2="20" y1="18" y2="18"/>
+        </svg>
+        {# Icône croix : visible quand menu ouvert. Cachée par défaut. #}
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="hidden h-5 w-5" data-mobile-menu-icon="open">
+          <path d="M18 6 6 18"/>
+          <path d="m6 6 12 12"/>
+        </svg>
+      </button>
     </div>
 
+  </div>
+
+  {# --- Panel mobile : caché par défaut, affiché quand burger cliqué ---
+       lg:hidden = invisible sur desktop (où la nav inline suffit). #}
+  <div
+    id="mobile-menu"
+    class="hidden lg:hidden border-t border-border bg-background"
+    data-mobile-menu
+  >
+    <nav class="mx-auto max-w-6xl px-4 py-4 sm:px-6" aria-label="Mobile navigation">
+      <ul class="space-y-1">
+        <li><a href="#features" class="block rounded-md px-3 py-2 text-base font-medium text-foreground hover:bg-muted transition-colors" data-mobile-menu-link>Features</a></li>
+        <li><a href="#how-it-works" class="block rounded-md px-3 py-2 text-base font-medium text-foreground hover:bg-muted transition-colors" data-mobile-menu-link>How it works</a></li>
+        <li><a href="#tools" class="block rounded-md px-3 py-2 text-base font-medium text-foreground hover:bg-muted transition-colors" data-mobile-menu-link>Tools</a></li>
+        <li><a href="#models" class="block rounded-md px-3 py-2 text-base font-medium text-foreground hover:bg-muted transition-colors" data-mobile-menu-link>Models</a></li>
+        <li><a href="#faq" class="block rounded-md px-3 py-2 text-base font-medium text-foreground hover:bg-muted transition-colors" data-mobile-menu-link>FAQ</a></li>
+        <li><a href="{{ config.GITHUB_REPO_URL }}" target="_blank" rel="noopener noreferrer" class="block rounded-md px-3 py-2 text-base font-medium text-muted-foreground hover:bg-muted transition-colors" data-mobile-menu-link>GitHub</a></li>
+      </ul>
+    </nav>
   </div>
 </header>

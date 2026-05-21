@@ -1,14 +1,17 @@
 """Routes du blueprint public.
 
-Phase 1 : home + healthz + favicon.
-Phase 2-3 : on ajoutera /privacy, /terms, /sitemap.xml, /robots.txt.
+Phases couvertes :
+- 1 : home + healthz + favicon
+- 3 : /privacy
+- 4 : /sitemap.xml + /robots.txt (SEO)
 """
 
 from __future__ import annotations
 
 import os
+from datetime import datetime, timezone
 
-from flask import current_app, render_template, send_from_directory
+from flask import Response, current_app, render_template, send_from_directory, url_for
 
 from app.blueprints.public import public_bp
 
@@ -53,6 +56,67 @@ def favicon():  # type: ignore[no-untyped-def]
     # send_from_directory garde le fichier en static/img/ : on ne le déplace pas
     img_dir = os.path.join(current_app.root_path, "static", "img")
     return send_from_directory(img_dir, "logo.png", mimetype="image/png")
+
+
+@public_bp.route("/sitemap.xml", methods=["GET"])
+def sitemap() -> Response:
+    """Génère un sitemap.xml dynamique pour les moteurs de recherche.
+
+    On liste uniquement les pages indexables (pas /healthz, pas /waitlist, pas /favicon).
+    `lastmod` est généré au moment de la requête — pas idéal pour le SEO mais
+    correct pour une landing qui change rarement (les vrais robots cachent).
+
+    Returns:
+        Response XML avec content-type adapté.
+    """
+    # Liste des routes à indexer (endpoint, changefreq, priority)
+    pages = [
+        ("public.home", "weekly", "1.0"),
+        ("public.privacy", "yearly", "0.3"),
+    ]
+
+    # Format ISO 8601 (Google recommande le format W3C)
+    lastmod = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+
+    # Construction du XML — on évite Jinja2 pour rester très simple et rapide
+    urls_xml = "\n".join(
+        f"""  <url>
+    <loc>{url_for(endpoint, _external=True)}</loc>
+    <lastmod>{lastmod}</lastmod>
+    <changefreq>{changefreq}</changefreq>
+    <priority>{priority}</priority>
+  </url>"""
+        for endpoint, changefreq, priority in pages
+    )
+
+    xml_body = f"""<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+{urls_xml}
+</urlset>
+"""
+
+    return Response(xml_body, mimetype="application/xml")
+
+
+@public_bp.route("/robots.txt", methods=["GET"])
+def robots() -> Response:
+    """Sert un robots.txt qui autorise l'indexation publique mais exclut les endpoints techniques.
+
+    - /waitlist (POST only, pas de sens d'indexer)
+    - /healthz (endpoint monitoring interne)
+    - /favicon.ico (déjà accessible via meta tags)
+
+    Le sitemap est annoncé explicitement pour aider les crawlers à le trouver.
+    """
+    sitemap_url = url_for("public.sitemap", _external=True)
+    body = f"""User-agent: *
+Allow: /
+Disallow: /waitlist
+Disallow: /healthz
+
+Sitemap: {sitemap_url}
+"""
+    return Response(body, mimetype="text/plain")
 
 
 @public_bp.route("/healthz", methods=["GET"])

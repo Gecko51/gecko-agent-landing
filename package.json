@@ -1,0 +1,14 @@
+{
+  "name": "gecko-agent-landing",
+  "version": "0.4.0",
+  "description": "Landing page for Gecko Agent Chrome extension. Tailwind CSS build only.",
+  "private": true,
+  "scripts": {
+    "build:css": "tailwindcss -i ./src/tailwind.src.css -o ./app/static/css/tailwind.css --minify",
+    "watch:css": "tailwindcss -i ./src/tailwind.src.css -o ./app/static/css/tailwind.css --watch"
+  },
+  "devDependencies": {
+    "@tailwindcss/cli": "^4.0.0",
+    "tailwindcss": "^4.0.0"
+  }
+}

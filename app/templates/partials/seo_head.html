@@ -55,22 +55,86 @@
 <meta name="theme-color" content="#0b0b0b">
 
 {# --- JSON-LD Schema.org SoftwareApplication --- #}
-{# Améliore l'affichage Google (rich results) et la compréhension de la nature du produit #}
+{# Améliore l'affichage Google (rich results) + clarifie la nature du produit
+   pour les LLM-crawlers (Google AI Overviews, Perplexity, ChatGPT Search). #}
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "SoftwareApplication",
   "name": "Gecko Agent",
-  "operatingSystem": "Chrome",
+  "alternateName": "Gecko Agent Chrome Extension",
+  "operatingSystem": "Chrome, Edge, Brave",
   "applicationCategory": "BrowserApplication",
-  "description": "AI-powered agentic browser automation assistant in Chrome's side panel.",
+  "applicationSubCategory": "Browser Automation",
+  "description": "AI-powered agentic browser automation assistant in Chrome's side panel. Reads pages, fills forms, runs multi-step workflows for sales, recruiting, and marketing teams.",
   "url": "{{ request.host_url }}",
   "downloadUrl": "{{ config.CHROME_WEBSTORE_URL }}",
   "softwareVersion": "0.1.0",
+  "datePublished": "2026-04-06",
+  "license": "{{ config.GITHUB_REPO_URL }}/blob/main/LICENSE",
+  "image": "{{ url_for('static', filename='img/logo.png', _external=True) }}",
+  "screenshot": "{{ url_for('static', filename='img/og-image.png', _external=True) }}",
   "offers": {
     "@type": "Offer",
     "price": "0",
     "priceCurrency": "USD"
+  },
+  "featureList": [
+    "AI Chat in Chrome Side Panel",
+    "Multi-Model Support (Claude, GPT, Gemini, Llama via OpenRouter)",
+    "9 Browser Automation Tools (click, type, scroll, navigate, read)",
+    "Agentic Loop up to 40 iterations",
+    "Real-Time Token Streaming",
+    "LinkedIn Profile Extraction (JSON-LD)",
+    "Airtable Smart Text Selection",
+    "Activity Log with Tool History",
+    "Conversation History",
+    "Custom Prompt Templates",
+    "Guided Onboarding"
+  ],
+  "author": {
+    "@type": "Organization",
+    "name": "Gecko Mind",
+    "url": "https://geckodesign.fr"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Gecko Mind",
+    "url": "https://geckodesign.fr"
   }
 }
 </script>
+
+{# --- Organization schema (séparé pour donner du poids au brand) --- #}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "Gecko Mind",
+  "url": "https://geckodesign.fr",
+  "logo": "{{ url_for('static', filename='img/logo.png', _external=True) }}",
+  "sameAs": [
+    "{{ config.GITHUB_REPO_URL }}"
+  ]
+}
+</script>
+
+{# --- BreadcrumbList (utile pour les pages secondaires comme /privacy) --- #}
+{% if breadcrumb_items %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {% for item in breadcrumb_items %}
+    {
+      "@type": "ListItem",
+      "position": {{ loop.index }},
+      "name": {{ item.name | tojson }},
+      "item": {{ item.url | tojson }}
+    }{% if not loop.last %},{% endif %}
+    {% endfor %}
+  ]
+}
+</script>
+{% endif %}

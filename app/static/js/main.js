@@ -109,8 +109,61 @@
     }
   }
 
+  /**
+   * Toggle le menu burger mobile : ouvre/ferme le panel et switch les icônes.
+   * Met aussi à jour aria-expanded pour les lecteurs d'écran.
+   */
+  function setupMobileMenu() {
+    const toggleBtn = document.querySelector('[data-mobile-menu-toggle]');
+    const menu = document.querySelector('[data-mobile-menu]');
+    if (!toggleBtn || !menu) return;
+
+    const iconClosed = toggleBtn.querySelector('[data-mobile-menu-icon="closed"]');
+    const iconOpen = toggleBtn.querySelector('[data-mobile-menu-icon="open"]');
+
+    /** Ferme le menu (état par défaut) */
+    function closeMenu() {
+      menu.classList.add('hidden');
+      toggleBtn.setAttribute('aria-expanded', 'false');
+      toggleBtn.setAttribute('aria-label', 'Open menu');
+      if (iconClosed) iconClosed.classList.remove('hidden');
+      if (iconOpen) iconOpen.classList.add('hidden');
+    }
+
+    /** Ouvre le menu */
+    function openMenu() {
+      menu.classList.remove('hidden');
+      toggleBtn.setAttribute('aria-expanded', 'true');
+      toggleBtn.setAttribute('aria-label', 'Close menu');
+      if (iconClosed) iconClosed.classList.add('hidden');
+      if (iconOpen) iconOpen.classList.remove('hidden');
+    }
+
+    // Toggle sur clic du burger
+    toggleBtn.addEventListener('click', () => {
+      const isOpen = toggleBtn.getAttribute('aria-expanded') === 'true';
+      isOpen ? closeMenu() : openMenu();
+    });
+
+    // Ferme automatiquement le menu après clic sur un lien (UX mobile)
+    menu.querySelectorAll('[data-mobile-menu-link]').forEach((link) => {
+      link.addEventListener('click', () => closeMenu());
+    });
+
+    // Ferme avec la touche Escape
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && toggleBtn.getAttribute('aria-expanded') === 'true') {
+        closeMenu();
+        toggleBtn.focus(); // Retour focus sur le bouton (a11y)
+      }
+    });
+  }
+
   // --- Bootstrap : attache les listeners au chargement du DOM ---
   document.addEventListener('DOMContentLoaded', () => {
+    // Mobile menu burger
+    setupMobileMenu();
+
     // Cherche tous les formulaires waitlist (au cas où on en a plusieurs sur la page)
     document.querySelectorAll('[data-waitlist-form]').forEach((form) => {
       form.addEventListener('submit', (event) => {
