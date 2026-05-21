@@ -39,9 +39,10 @@ class Config:
     SQLALCHEMY_TRACK_MODIFICATIONS = False  # Désactive un signal coûteux et déprécié
 
     # --- Liens externes affichés dans les templates ---
+    # URL Chrome Web Store de l'extension Gecko Agent (publiée le 2026-04)
     CHROME_WEBSTORE_URL = os.getenv(
         "CHROME_WEBSTORE_URL",
-        "https://chromewebstore.google.com/",
+        "https://chromewebstore.google.com/detail/gecko-agent/fodegmmmomdfjdfaamcldkemopidniep",
     )
     GITHUB_REPO_URL = os.getenv(
         "GITHUB_REPO_URL",

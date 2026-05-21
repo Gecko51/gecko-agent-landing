@@ -62,7 +62,7 @@ services:
 
       # --- Liens externes (vides = laisse les defaults de config.py) ---
       - key: CHROME_WEBSTORE_URL
-        value: https://chromewebstore.google.com/
+        value: https://chromewebstore.google.com/detail/gecko-agent/fodegmmmomdfjdfaamcldkemopidniep
       - key: GITHUB_REPO_URL
         value: https://github.com/Gecko51/gecko-agent
 
