@@ -14,8 +14,10 @@ Flask-Migrate>=4.0.5
 Flask-Limiter>=3.5.0
 email-validator>=2.1.0
 
-# --- Phase 5 (déploiement prod) — à décommenter pour le déploiement ---
+# --- Phase 5 (déploiement prod) — actif ---
 # Gunicorn ne fonctionne pas sur Windows (Unix-only).
 # Le marker conditionnel l'exclut automatiquement de l'install Windows.
-# gunicorn>=23.0.0; sys_platform != "win32"
-# Flask-Talisman>=1.1.0
+gunicorn>=23.0.0; sys_platform != "win32"
+Flask-Talisman>=1.1.0
+# psycopg2-binary requis si tu bascules sur PostgreSQL en prod (sinon SQLite suffit)
+psycopg2-binary>=2.9.9; sys_platform != "win32"

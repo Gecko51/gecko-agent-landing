@@ -73,12 +73,48 @@ class ProdConfig(Config):
 
     DEBUG = False
     TESTING = False
-    # En prod, les cookies doivent être en HTTPS uniquement
+
+    # --- Cookies sécurisés ---
     SESSION_COOKIE_SECURE = True
     SESSION_COOKIE_HTTPONLY = True
     SESSION_COOKIE_SAMESITE = "Lax"
-    # Force HTTPS sur tous les URLs (Flask-Talisman complètera ça en Phase 5)
     PREFERRED_URL_SCHEME = "https"
+
+    # --- Flask-Talisman : headers de sécurité ---
+    # On active Talisman uniquement en prod (en dev, pas de HTTPS donc no-op)
+    TALISMAN_ENABLED = True
+
+    # CSP (Content Security Policy) — strict mais fonctionnel pour notre stack
+    # Plausible est ajouté conditionnellement par init_app si PLAUSIBLE_DOMAIN défini
+    TALISMAN_CSP = {
+        "default-src": "'self'",
+        # Scripts : seulement notre main.js (et Plausible si activé)
+        "script-src": ["'self'"],
+        # Styles : Tailwind compilé en self, fonts Google injectent du CSS inline
+        "style-src": ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+        # Fonts : Google Fonts
+        "font-src": ["'self'", "https://fonts.gstatic.com", "data:"],
+        # Images : logo + favicon (self) + data: pour les SVG inlinés en URI
+        "img-src": ["'self'", "data:"],
+        # Fetch AJAX (waitlist) : self uniquement
+        "connect-src": ["'self'"],
+        # Empêche d'être embedded en iframe (anti-clickjacking)
+        "frame-ancestors": "'none'",
+        # Form submissions vers self uniquement
+        "form-action": "'self'",
+        # Base URI bloqué (anti-DOM-based XSS)
+        "base-uri": "'self'",
+    }
+
+    # HSTS : 1 an + includeSubDomains + preload (eligibility hstspreload.org)
+    TALISMAN_STRICT_TRANSPORT_SECURITY = True
+    TALISMAN_STRICT_TRANSPORT_SECURITY_MAX_AGE = 31536000  # 1 an en secondes
+    TALISMAN_STRICT_TRANSPORT_SECURITY_INCLUDE_SUBDOMAINS = True
+    TALISMAN_STRICT_TRANSPORT_SECURITY_PRELOAD = True
+
+    # Autres headers
+    TALISMAN_REFERRER_POLICY = "strict-origin-when-cross-origin"
+    TALISMAN_FRAME_OPTIONS = "DENY"  # Renforce frame-ancestors
 
 
 class TestConfig(Config):
@@ -88,3 +124,7 @@ class TestConfig(Config):
     DEBUG = False
     SQLALCHEMY_DATABASE_URI = "sqlite:///:memory:"
     WTF_CSRF_ENABLED = False  # Simplifie les tests de formulaires (à activer en intégration)
+    # Désactive le rate limiter en test (sinon les tests qui font plusieurs POST hit 429)
+    RATELIMIT_ENABLED = False
+    # Pas de Talisman en test (force_https casserait les requêtes test http://)
+    TALISMAN_ENABLED = False

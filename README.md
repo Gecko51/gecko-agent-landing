@@ -87,16 +87,92 @@ Variables critiques :
 
 ## Déploiement
 
-### Render.com (recommandé)
+### Étape 1 — Render.com (recommandé)
 
-1. Connecter le repo GitHub dans le dashboard Render
-2. Render détecte automatiquement [render.yaml](render.yaml) et configure le service
-3. Renseigner les variables d'env dans le dashboard (SECRET_KEY est généré automatiquement)
-4. Premier deploy automatique sur push `main`
+1. **Signup Render** : [render.com](https://render.com) (gratuit, login GitHub)
+2. **New Blueprint** : Dashboard → New → Blueprint → connecter le repo `Gecko51/gecko-agent-landing`
+3. Render détecte `render.yaml` automatiquement et lit la config
+4. Cliquer **Apply** → le premier deploy se lance (build ~2 min)
+5. Une fois OK, l'URL sera `https://gecko-agent-landing.onrender.com` (ou similaire)
 
-### Procfile (Heroku / Railway)
+> **Free tier note** : le service "s'endort" après 15 min d'inactivité. Premier accès après veille = ~30s. Solution : upgrade payant ou un cron externe qui ping `/healthz` toutes les 10 min.
 
-Le [Procfile](Procfile) à la racine est compatible Heroku, Railway, Fly.io. Adapter les commandes selon la plateforme.
+### Étape 2 — Variables d'environnement
+
+`render.yaml` pré-remplit l'essentiel. Variables à **ajuster manuellement** dans le dashboard Render :
+
+| Variable | Valeur recommandée | Note |
+|----------|--------------------|------|
+| `SECRET_KEY` | (auto-généré par Render) | Ne jamais modifier |
+| `DATABASE_URL` | (voir Étape 3) | Choix entre SQLite et PostgreSQL |
+| `PLAUSIBLE_DOMAIN` | `gecko-agent.com` (ou vide) | Domaine déclaré dans Plausible |
+| `CHROME_WEBSTORE_URL` | URL extension publiée | Une fois l'extension validée |
+
+### Étape 3 — Base de données
+
+Choisir l'une des 3 options :
+
+#### Option A — SQLite éphémère (gratuit, simple, données perdues à chaque deploy)
+- **Convient pour** : démarrage, MVP, pas de waitlist critique
+- **Config** : laisser `DATABASE_URL=sqlite:///instance/database.db` (default)
+- ⚠️ Render free tier wipe le filesystem à chaque redéploiement → tu perds la table `waitlist_emails`
+
+#### Option B — Render PostgreSQL gratuit (recommandé pour la waitlist)
+1. Dashboard Render → **New +** → **PostgreSQL**
+2. Plan : Free ($0/mois pendant 90 jours, puis $7/mois ou supprimé)
+3. Region : Frankfurt (matche le service web)
+4. Une fois créé, copier l'**Internal Database URL**
+5. Dans le service web → Environment → `DATABASE_URL` → coller cette URL
+6. Redéployer : `flask db upgrade` s'exécutera automatiquement et créera la table
+
+#### Option C — Render Disk persistant ($1/mois pour 1 GB)
+- Configurer un disque attaché au service web (mount sur `/opt/render/project/src/instance`)
+- SQLite persiste entre les deploys
+- Plus lourd, mais pas de migration BDD
+
+### Étape 4 — DNS custom (optionnel)
+
+Si tu as un domaine (ex: `gecko-agent.com`) :
+1. Dashboard Render → service web → **Settings** → **Custom Domains** → Add `gecko-agent.com`
+2. Render donne un CNAME à pointer (`xxxxx.onrender.com`)
+3. Côté registrar (OVH, Cloudflare…) : créer un CNAME ou ALIAS vers l'adresse Render
+4. Attendre propagation DNS (~5 min à 24h)
+5. HTTPS Let's Encrypt configuré automatiquement par Render
+
+### Étape 5 — Plausible Analytics (optionnel, RGPD-friendly)
+
+1. **Signup Plausible** : [plausible.io](https://plausible.io) (essai 30 jours, ~$9/mois)
+2. Ajouter ton site : domaine = celui que tu utilises (ex: `gecko-agent.com`)
+3. Dans Render → Environment → `PLAUSIBLE_DOMAIN` = le domaine déclaré dans Plausible
+4. Redéploy → le script Plausible se charge automatiquement (voir `base.html`, ligne conditionnelle)
+5. Pas de bandeau cookie nécessaire (Plausible ne dépose pas de cookie, conformité RGPD native)
+
+### Étape 6 — Vérifier le déploiement
+
+```bash
+# Healthcheck
+curl https://gecko-agent.com/healthz
+# Doit renvoyer : {"service":"gecko-agent-landing","status":"ok","version":"0.1.0"}
+
+# Headers de sécurité (vérif Talisman actif)
+curl -I https://gecko-agent.com/
+# Doit inclure : Strict-Transport-Security, Content-Security-Policy, X-Frame-Options: DENY
+```
+
+Audit Lighthouse final :
+```
+Chrome → DevTools → Lighthouse → Mobile + Performance + A11y + Best Practices + SEO → Run
+```
+Cible : ≥ 90 sur les 4 axes.
+
+### Alternatives à Render
+
+| Plateforme | Procfile | Render.yaml | Free tier |
+|------------|----------|-------------|-----------|
+| **Railway** | ✅ | ❌ (utilise nixpacks ou Procfile) | $5 crédit/mois |
+| **Fly.io** | ❌ (utilise `fly.toml`) | ❌ | 3 micro-VMs gratuites |
+| **Heroku** | ✅ | ❌ | Plus de free tier |
+| **PythonAnywhere** | ❌ | ❌ | Free pour 1 app web |
 
 ---
 
@@ -112,23 +188,33 @@ Le [Procfile](Procfile) à la racine est compatible Heroku, Railway, Fly.io. Ada
 
 ## Avancement
 
-### Phase 1 — Setup & squelette ✅
-- App Factory Flask
-- Route `/` (landing placeholder) + `/healthz`
-- Template `base.html` avec Tailwind CDN + variables oklch
-- Config racine (`.env.example`, `.gitignore`, `requirements.txt`, etc.)
+### Phase 1 — Setup & squelette ✅ `v0.1-setup`
+- App Factory Flask + config Dev/Prod/Test
+- Routes `/`, `/healthz`, `/favicon.ico` + 404 custom
+- Template `base.html` avec Tailwind + variables oklch + Inter
 
-### Phase 2 — Sections principales ⏳
-À venir : Hero finalisé, Features, How it works, Tools.
+### Phase 2 — Sections principales ✅ `v0.2-content`
+- Section Features (11 cards) + How it works (3 steps) + Tools (9 outils)
+- Bibliothèque d'icônes Lucide centralisée (`_icons.html`)
+- Navigation par ancres + smooth scroll
 
-### Phase 3 — Sections avancées ⏳
-À venir : Models, FAQ, Waitlist form, Footer.
+### Phase 3 — Sections avancées ✅ `v0.3-engagement`
+- Section Models + FAQ accordion (8 Q/R) + Footer enrichi 3 colonnes
+- Page `/privacy` complète
+- Waitlist : modèle SQLAlchemy + blueprint + form CSRF + honeypot + rate limit
 
-### Phase 4 — Polish & SEO ⏳
-À venir : Tailwind compilé, images optimisées, meta tags, Lighthouse ≥ 90.
+### Phase 4 — Polish & SEO ✅ `v0.4-polish`
+- Tailwind v4 compilé (25.8 KB vs ~3 MB CDN — gain 99 %)
+- Sitemap.xml + robots.txt + JSON-LD enrichi (SoftwareApplication + Organization)
+- Skip link + ARIA + focus visible + prefers-reduced-motion
+- Mobile menu burger fonctionnel
 
-### Phase 5 — MVP Release ⏳
-À venir : tests, headers sécurité, déploiement Render.
+### Phase 5 — MVP Release ✅ `v1.0-mvp`
+- Flask-Talisman : HSTS + CSP + X-Frame-Options en prod uniquement
+- Tests pytest : 19 tests (routes + waitlist + security) — tous au vert
+- Plausible analytics conditionnel (RGPD-friendly)
+- `render.yaml` complet avec preDeployCommand pour migrations
+- Guide de déploiement complet dans ce README (étapes Render + DB + DNS + Plausible)
 
 ---
 

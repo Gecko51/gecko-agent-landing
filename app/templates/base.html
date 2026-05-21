@@ -32,6 +32,12 @@
      et toutes les utilities Tailwind effectivement utilisées par nos templates. #}
   <link rel="stylesheet" href="{{ url_for('static', filename='css/tailwind.css') }}">
 
+  {# Plausible Analytics (RGPD-friendly, sans cookie, anonyme).
+     Activé uniquement si PLAUSIBLE_DOMAIN est défini en config (vide en dev). #}
+  {% if config.PLAUSIBLE_DOMAIN %}
+    <script defer data-domain="{{ config.PLAUSIBLE_DOMAIN }}" src="https://plausible.io/js/script.js"></script>
+  {% endif %}
+
   {# Block extensible pour les pages qui ont besoin d'ajouter des CSS/JS spécifiques #}
   {% block extra_head %}{% endblock %}
 </head>

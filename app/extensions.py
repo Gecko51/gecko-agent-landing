@@ -12,6 +12,7 @@ from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
+from flask_talisman import Talisman
 from flask_wtf.csrf import CSRFProtect
 
 # --- ORM & migrations ---
@@ -33,3 +34,8 @@ limiter = Limiter(
     key_func=get_remote_address,
     default_limits=["200 per minute", "1000 per hour"],
 )
+
+# talisman : headers de sécurité HTTPS (HSTS, CSP, X-Frame-Options, Referrer-Policy…)
+# Activé uniquement en prod via init_app + config TALISMAN_ENABLED.
+# En dev, on l'instancie quand même mais on ne l'init pas (no-op).
+talisman = Talisman()

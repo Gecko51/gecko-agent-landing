@@ -68,7 +68,7 @@ def _register_extensions(app: Flask) -> None:
     Important : importer les modèles APRÈS db.init_app pour qu'Alembic les
     détecte lors des migrations autogenerate.
     """
-    from app.extensions import csrf, db, limiter, migrate
+    from app.extensions import csrf, db, limiter, migrate, talisman
 
     db.init_app(app)
     migrate.init_app(app, db)
@@ -78,6 +78,30 @@ def _register_extensions(app: Flask) -> None:
     # Import des modèles pour qu'Alembic puisse les voir
     # noqa F401 : import volontaire pour le side-effect (enregistrement métadonnées)
     from app import models  # noqa: F401
+
+    # --- Talisman : headers de sécurité, prod uniquement ---
+    # En dev, on skip pour ne pas casser le hot reload (HTTPS forcé bloque http://localhost)
+    if app.config.get("TALISMAN_ENABLED", False):
+        # Si Plausible est activé, on autorise son domaine dans la CSP
+        csp = dict(app.config["TALISMAN_CSP"])
+        plausible_domain = app.config.get("PLAUSIBLE_DOMAIN", "")
+        if plausible_domain:
+            # Plausible.io sert le script + reçoit les events
+            csp["script-src"] = list(csp["script-src"]) + ["https://plausible.io"]
+            csp["connect-src"] = list(csp["connect-src"]) + ["https://plausible.io"]
+
+        talisman.init_app(
+            app,
+            force_https=True,
+            strict_transport_security=app.config["TALISMAN_STRICT_TRANSPORT_SECURITY"],
+            strict_transport_security_max_age=app.config["TALISMAN_STRICT_TRANSPORT_SECURITY_MAX_AGE"],
+            strict_transport_security_include_subdomains=app.config["TALISMAN_STRICT_TRANSPORT_SECURITY_INCLUDE_SUBDOMAINS"],
+            strict_transport_security_preload=app.config["TALISMAN_STRICT_TRANSPORT_SECURITY_PRELOAD"],
+            content_security_policy=csp,
+            referrer_policy=app.config["TALISMAN_REFERRER_POLICY"],
+            frame_options=app.config["TALISMAN_FRAME_OPTIONS"],
+            session_cookie_secure=True,
+        )
 
 
 def _register_context_processors(app: Flask) -> None:

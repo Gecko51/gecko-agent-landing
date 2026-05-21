@@ -8,18 +8,66 @@ services:
   - type: web
     name: gecko-agent-landing
     runtime: python
-    plan: free                # Free tier, à upgrader si trafic
-    region: frankfurt         # Plus proche utilisateurs EU
+    plan: free                          # Free tier (à upgrader si trafic > 100 req/s)
+    region: frankfurt                   # Plus proche utilisateurs EU
+    branch: main                        # Auto-deploy depuis main
+
+    # --- Build : install des deps Python ---
+    # tailwind.css est commité dans le repo (Phase 4), donc PAS besoin de rebuilder
+    # le CSS sur Render. Si tu veux rebuild auto, il faut ajouter Node.js au build.
     buildCommand: pip install -r requirements.txt
-    startCommand: gunicorn wsgi:app --workers 2 --bind 0.0.0.0:$PORT
-    healthCheckPath: /healthz # Endpoint healthcheck Render
-    autoDeploy: true          # Deploy auto sur push main
+
+    # --- Pre-deploy : applique les migrations BDD avant le démarrage ---
+    # Important pour que le schéma soit à jour à chaque deploy.
+    # Note : ne tourne qu'une fois par deploy (pas par worker).
+    preDeployCommand: flask db upgrade
+
+    # --- Start : Gunicorn avec 2 workers (suffit pour free tier) ---
+    # --access-logfile - et --error-logfile - = logs vers stdout (visible Render dashboard)
+    startCommand: gunicorn wsgi:app --workers 2 --bind 0.0.0.0:$PORT --access-logfile - --error-logfile -
+
+    # --- Healthcheck Render ping toutes les ~30s ---
+    healthCheckPath: /healthz
+
+    # --- Auto-deploy à chaque push sur main ---
+    autoDeploy: true
+
+    # --- Variables d'environnement ---
     envVars:
+      # Runtime Python (doit matcher runtime.txt et .python-version)
       - key: PYTHON_VERSION
         value: 3.13.7
+
+      # Mode Flask
       - key: FLASK_ENV
         value: production
       - key: FLASK_DEBUG
         value: "0"
+
+      # FLASK_APP : indique à `flask db upgrade` où trouver l'app
+      - key: FLASK_APP
+        value: app
+
+      # SECRET_KEY : généré automatiquement par Render à la création
+      # (32 bytes random hex, jamais visible en clair)
       - key: SECRET_KEY
-        generateValue: true   # Render génère une clé aléatoire à la création
+        generateValue: true
+
+      # --- BDD ---
+      # Par défaut : SQLite sur disque éphémère (DATA PERDUE à chaque deploy free tier)
+      # Pour persistance, voir README -> Deployment section : ajouter un Render PostgreSQL
+      # et remplacer cette valeur par la connexion URL générée
+      - key: DATABASE_URL
+        value: sqlite:///instance/database.db
+
+      # --- Liens externes (vides = laisse les defaults de config.py) ---
+      - key: CHROME_WEBSTORE_URL
+        value: https://chromewebstore.google.com/
+      - key: GITHUB_REPO_URL
+        value: https://github.com/Gecko51/gecko-agent
+
+      # --- Analytics Plausible ---
+      # Laisser vide pour désactiver. Renseigner le domaine Plausible pour activer
+      # (ex: "gecko-agent.com" si tu as configuré ce site dans Plausible)
+      - key: PLAUSIBLE_DOMAIN
+        value: ""
