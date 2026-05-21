@@ -87,7 +87,105 @@ Variables critiques :
 
 ## Déploiement
 
-### Étape 1 — Render.com (recommandé)
+Deux options selon ton besoin :
+
+| Plateforme | Stack | Quand l'utiliser |
+|------------|-------|------------------|
+| **[Netlify](#netlifycom-recommand%C3%A9-pour-le-mvp)** (recommandé MVP) | Site statique pré-rendu via Frozen-Flask | Pas de waitlist active, simple, gratuit, CDN mondial |
+| **[Render](#rendercom-alternative)** | Flask + Gunicorn + BDD SQLite/PostgreSQL | Si tu réactives le formulaire waitlist côté serveur |
+
+---
+
+### Netlify.com (recommandé pour le MVP)
+
+Le site est généré en HTML statique via **Frozen-Flask**, puis publié sur le CDN Netlify. Pas de serveur Flask en prod = ultra rapide + gratuit + HTTPS auto.
+
+#### Étape 1 — Signup Netlify + connexion repo
+
+1. **Signup** : [netlify.com](https://www.netlify.com) (login GitHub, gratuit)
+2. **Import** : Dashboard → **Add new site** → **Import an existing project** → choisir GitHub → repo `Gecko51/gecko-agent-landing`
+3. Netlify détecte automatiquement [netlify.toml](netlify.toml) et lit toute la config
+4. Cliquer **Deploy site** → le premier build se lance (~3 min)
+
+#### Étape 2 — Variables d'environnement (ajustables dans le dashboard Netlify)
+
+| Variable | Valeur par défaut | Quand l'ajuster |
+|----------|-------------------|-----------------|
+| `SITE_URL` | `https://gecko-agent-landing.netlify.app` | Quand tu ajoutes un domaine custom (ex: `https://gecko-agent.com`) |
+| `PYTHON_VERSION` | `3.13.7` | Si tu changes la version Python |
+| `NODE_VERSION` | `22` | Si tu changes la version Node |
+
+**Important** : modifier `SITE_URL` et relancer un deploy met à jour les URLs absolues dans le sitemap, OG, canonical et JSON-LD.
+
+#### Étape 3 — Build pipeline
+
+Le build exécute automatiquement (cf. `netlify.toml`) :
+1. `pip install -r requirements.txt` → installe Flask, Frozen-Flask, etc.
+2. `npm install` → installe Tailwind CLI
+3. `npm run build:css` → compile `tailwind.css` minifié
+4. `python freeze.py` → génère le site statique dans `build/`
+5. Netlify publie `build/` sur le CDN
+
+#### Étape 4 — Custom domain (optionnel)
+
+1. Dashboard Netlify → **Domain settings** → **Add custom domain** → renseigner ton domaine
+2. Netlify donne les CNAME/A records à configurer chez ton registrar (OVH, Cloudflare…)
+3. HTTPS Let's Encrypt s'active automatiquement après propagation DNS
+4. **Important** : mettre à jour `SITE_URL` dans les env vars Netlify avec le nouveau domaine + redéployer
+
+#### Étape 5 — Plausible Analytics (optionnel)
+
+Le template `base.html` charge le script Plausible si la variable `config.PLAUSIBLE_DOMAIN` est définie. Sur Netlify (statique), on doit injecter cette valeur au moment du freeze :
+
+1. Dans `netlify.toml` → ajouter `PLAUSIBLE_DOMAIN = "gecko-agent.com"` dans `[build.environment]`
+2. Adapter `freeze.py` pour passer la variable à la config Flask au moment du freeze
+3. Le script Plausible sera inliné dans le HTML rendu
+
+#### Étape 6 — Vérifier le déploiement
+
+```bash
+# Vérifier la page principale
+curl -I https://gecko-agent-landing.netlify.app/
+
+# Headers de sécurité (vérif netlify.toml [[headers]])
+curl -I https://gecko-agent-landing.netlify.app/ | grep -i -E "(content-security|strict-transport|x-frame)"
+
+# Sitemap valide
+curl https://gecko-agent-landing.netlify.app/sitemap.xml
+
+# robots.txt
+curl https://gecko-agent-landing.netlify.app/robots.txt
+```
+
+#### Build local (preview avant push)
+
+```powershell
+.venv\Scripts\Activate.ps1
+npm run build:css
+python freeze.py
+
+# Sert le dossier build/ sur http://localhost:8000
+python -m http.server -d build 8000
+```
+
+#### Limitations vs Render
+
+| Feature | Netlify static | Render (Flask) |
+|---------|----------------|-----------------|
+| Performance | ⚡ CDN mondial | Bien (1 région) |
+| Coût | Gratuit | Gratuit (free tier limité) |
+| HTTPS auto | ✅ | ✅ |
+| **Waitlist form** | ❌ (utiliser Netlify Forms) | ✅ (SQLite/PostgreSQL) |
+| Routes dynamiques (POST) | ❌ | ✅ |
+| Endpoint `/healthz` JSON | ❌ (exclu du freeze) | ✅ |
+
+Si tu réactives le formulaire waitlist sur Netlify, deux options :
+1. **Netlify Forms** : ajouter `data-netlify="true"` sur le `<form>` (gratuit jusqu'à 100 submissions/mois)
+2. Conserver le backend Flask sur Render (les deux peuvent coexister, le formulaire pointerait vers `gecko-agent-api.onrender.com`)
+
+---
+
+### Render.com (alternative)
 
 1. **Signup Render** : [render.com](https://render.com) (gratuit, login GitHub)
 2. **New Blueprint** : Dashboard → New → Blueprint → connecter le repo `Gecko51/gecko-agent-landing`

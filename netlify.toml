@@ -1,0 +1,99 @@
+# =============================================================================
+# Configuration Netlify (Infrastructure as Code)
+# Docs : https://docs.netlify.com/configure-builds/file-based-configuration/
+# =============================================================================
+
+[build]
+  # Commande exécutée à chaque push sur main (ou autre branche déployée)
+  # 1. pip install : dépendances Python (Flask + Frozen-Flask + Tailwind ne sont pas en pip)
+  # 2. npm install : devDependencies (@tailwindcss/cli)
+  # 3. npm run build:css : compile tailwind.css minifié
+  # 4. python freeze.py : génère le site statique dans build/
+  command = "pip install -r requirements.txt && npm install && npm run build:css && python freeze.py"
+
+  # Dossier publié sur le CDN Netlify (sortie de freeze.py)
+  publish = "build"
+
+  # Pas de fonction serverless utilisée
+  # functions = "netlify/functions"
+
+[build.environment]
+  # Versions runtime (Netlify détecte aussi runtime.txt et package.json)
+  PYTHON_VERSION = "3.13.7"
+  NODE_VERSION = "22"
+
+  # SITE_URL utilisé par freeze.py pour générer les URLs absolues (sitemap, OG, canonical)
+  # ⚠️ À ajuster dans le dashboard Netlify quand tu ajoutes un domaine custom
+  SITE_URL = "https://gecko-agent-landing.netlify.app"
+
+  # Désactive les options Netlify qui interfèrent avec notre build
+  CI = "true"
+  # Évite que pip se plaigne de l'absence de venv en CI
+  PIP_DISABLE_PIP_VERSION_CHECK = "1"
+
+# =============================================================================
+# Headers de sécurité (remplacent Flask-Talisman pour le site statique)
+# Appliqués à toutes les routes via le pattern /*
+# =============================================================================
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    # HSTS : force HTTPS pendant 1 an, includeSubDomains, preload-ready
+    Strict-Transport-Security = "max-age=31536000; includeSubDomains; preload"
+
+    # Anti-clickjacking : la page ne peut pas être chargée en iframe
+    X-Frame-Options = "DENY"
+
+    # Empêche le MIME-type sniffing (force le content-type déclaré)
+    X-Content-Type-Options = "nosniff"
+
+    # Politique de référent : envoie l'origine seulement pour les requêtes cross-origin
+    Referrer-Policy = "strict-origin-when-cross-origin"
+
+    # Désactive les API navigateur non utilisées (anti-fingerprinting)
+    Permissions-Policy = "geolocation=(), microphone=(), camera=(), payment=()"
+
+    # CSP : exactement la même que celle de Flask-Talisman (ProdConfig)
+    # script-src + connect-src incluent plausible.io pour les analytics conditionnelles
+    Content-Security-Policy = "default-src 'self'; script-src 'self' https://plausible.io; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data:; connect-src 'self' https://plausible.io; frame-ancestors 'none'; form-action 'self'; base-uri 'self'"
+
+# Headers spécifiques aux assets : cache long pour les fichiers versionnés
+[[headers]]
+  for = "/static/css/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/static/js/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/static/img/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/static/fonts/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# =============================================================================
+# Redirects + custom 404
+# =============================================================================
+
+# Catch-all 404 : Netlify sert automatiquement /404.html pour les routes inconnues
+# (généré par freeze.py). On peut aussi définir des redirects custom ici.
+
+# Exemple : rediriger /github vers le repo
+[[redirects]]
+  from = "/github"
+  to = "https://github.com/Gecko51/gecko-agent"
+  status = 302
+
+# Exemple : rediriger /chrome vers le Chrome Web Store
+[[redirects]]
+  from = "/chrome"
+  to = "https://chromewebstore.google.com/detail/gecko-agent/fodegmmmomdfjdfaamcldkemopidniep"
+  status = 302

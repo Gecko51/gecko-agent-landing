@@ -21,3 +21,7 @@ gunicorn>=23.0.0; sys_platform != "win32"
 Flask-Talisman>=1.1.0
 # psycopg2-binary requis si tu bascules sur PostgreSQL en prod (sinon SQLite suffit)
 psycopg2-binary>=2.9.9; sys_platform != "win32"
+
+# --- Déploiement statique Netlify (génération HTML pré-rendu) ---
+# Frozen-Flask parcourt les routes Flask et écrit le HTML dans build/
+Frozen-Flask>=1.0.2

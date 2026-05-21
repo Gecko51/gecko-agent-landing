@@ -33,6 +33,7 @@ instance/
 htmlcov/
 
 # --- Build / Distribution ---
+# build/ contient la sortie de freeze.py (Frozen-Flask) — généré à chaque deploy Netlify
 build/
 dist/
 *.log
