@@ -4,32 +4,37 @@
   Met en avant le multi-modèle via OpenRouter : l'utilisateur garde le contrôle
   total sur le LLM utilisé (qualité vs coût vs vitesse).
 
-  Design en grayscale pur (cohérent avec l'extension) — pas de logos officiels
-  qui seraient out-of-date et juridiquement risqués.
+  Logos SVG officiels stockés dans static/img/logos/ (fill blanc sur fond sombre).
+  Sources : SimpleIcons (MIT) pour Anthropic, OpenAI, Google Gemini.
+  Moonshot AI / Kimi : croissant de lune custom (pas de logo SimpleIcons disponible).
 #}
 
 {# Liste des modèles supportés. Versions alignées sur les LLM disponibles en 2026. #}
 {% set models = [
   {
-    "initial": "A",
+    "logo": "anthropic.svg",
+    "logo_alt": "Anthropic logo",
     "name": "Claude 4.7 Opus",
     "provider": "Anthropic",
     "best_for": "Complex reasoning, code generation"
   },
   {
-    "initial": "O",
+    "logo": "openai.svg",
+    "logo_alt": "OpenAI logo",
     "name": "GPT-5.5",
     "provider": "OpenAI",
     "best_for": "Agentic tasks"
   },
   {
-    "initial": "G",
+    "logo": "googlegemini.svg",
+    "logo_alt": "Google Gemini logo",
     "name": "Gemini 3.5 Flash",
     "provider": "Google",
     "best_for": "Fast responses, simple tasks"
   },
   {
-    "initial": "K",
+    "logo": "moonshot.svg",
+    "logo_alt": "Moonshot AI logo",
     "name": "Kimi K2.6",
     "provider": "Moonshot AI",
     "best_for": "Agentic tasks, open-weight"
@@ -57,9 +62,14 @@
       {% for m in models %}
         <article class="rounded-lg border border-border bg-card p-5 transition-colors hover:bg-card">
 
-          {# Initiale du provider dans un cercle (placeholder visuel propre) #}
-          <div class="inline-flex h-10 w-10 items-center justify-center rounded-full bg-primary text-primary-foreground font-bold text-base">
-            {{ m.initial }}
+          {# Logo SVG du provider dans un cercle noir — fichiers dans static/img/logos/ #}
+          <div class="inline-flex h-10 w-10 items-center justify-center rounded-full bg-primary">
+            <img
+              src="{{ url_for('static', filename='img/logos/' ~ m.logo) }}"
+              alt="{{ m.logo_alt }}"
+              class="h-5 w-5"
+              loading="lazy"
+            >
           </div>
 
           <h3 class="mt-4 text-base font-semibold text-foreground">{{ m.name }}</h3>
