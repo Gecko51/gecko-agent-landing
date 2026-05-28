@@ -19,7 +19,7 @@
 
 [build.environment]
   # Versions runtime (Netlify détecte aussi runtime.txt et package.json)
-  PYTHON_VERSION = "3.13.7"
+  PYTHON_VERSION = "3.13.3"
   NODE_VERSION = "22"
 
   # SITE_URL utilisé par freeze.py pour générer les URLs absolues (sitemap, OG, canonical)
