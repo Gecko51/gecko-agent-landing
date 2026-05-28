@@ -18,8 +18,9 @@
   # functions = "netlify/functions"
 
 [build.environment]
-  # Versions runtime (Netlify détecte aussi runtime.txt et package.json)
-  PYTHON_VERSION = "3.12.7"
+  # PYTHON_VERSION retiré : mise (gestionnaire de Netlify noble-new-builds) n'a pas
+  # de binaires précompilés pour les versions spécifiques. On utilise le Python 3.12
+  # système natif d'Ubuntu Noble 24.04 (la build image).
   NODE_VERSION = "22"
 
   # SITE_URL utilisé par freeze.py pour générer les URLs absolues (sitemap, OG, canonical)
